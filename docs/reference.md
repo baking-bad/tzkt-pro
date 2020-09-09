@@ -3,21 +3,21 @@
 #### Accounts
 
 View names: 
-**users** (Kind = user), 
-**delegates** (Kind = delegate), 
-**contracts** (kind = contract)
+**users** (Type = 1)
+**delegates** (Type = 2)
+**contracts** (Type = 3)
 
-Comments: 
-*"Implicit accounts (tz) that are not registered as delegates",*
-*"implicit accounts (tz) that are registered as delegates",*
-*"originated accounts (KT) that have code"*
+Comments:
+*"Implicit accounts (tz) that are not registered as delegates"*
+*"Implicit accounts (tz) that are registered as delegates"*
+*"Originated accounts (KT) that have code"*
 
 | Select/Join | As | Comment |
 | ---- | ---- | ---- |
 | Id |                          |                                                              |
 | Address | address | Public key hash of the account |
 | Type |  |  |
-| FirstLevel | first_level | Block height of the first operation, related to the account |
+| FirstLevel | first_level | Block height of the first operation related to the account |
 | LastLevel | last_level | Height of the block in which the account state was changed last time |
 | Balance | balance | Account balance/Total balance of the delegate (baker), including spendable and frozen funds (micro tez) |
 | Counter | counter | An account nonce which is used to prevent operation replay |
@@ -28,10 +28,10 @@ Comments:
 | RevealsCount | num_reveals | Number of reveal (is used to reveal the public key associated with an account) operations of the contract |
 | MigrationsCount | num_migrations | Number of migration (result of the context (database) migration during a protocol update) operations, related to the account (synthetic type) |
 | DelegateId **[User, Contract]** | delegate_id |  |
-| **[User, Contract]** Accounts.address FROM JOIN Accounts ON Accounts.Id = DelegateId | delegate | Address of the current delegate of the account. `null` if it's not delegated |
+| **[User, Contract]** Accounts.address JOIN ON Accounts.Id = DelegateId | delegate | Address of the current delegate of the account. `null` if it's not delegated |
 | **[User, Contract]** DelegationLevel | delegation_level | Block height of latest delegation. `null` if it's not delegated |
 | Staked | is_staked | Whether account participates in staking (bakes or delegates) |
-| **[Contract]** Kind | kind | Sub kinds: `delegator_contract` (aka manager.tz) or `smart_contract` |
+| **[Contract]** CASE WHEN Kind = **1** THEN **delegator_contract** WHEN Kind = **2** THEN **smart_contract** ELSE NULL | kind | Sub kinds: `delegator_contract` (aka manager.tz) or `smart_contract` |
 | Spendable |  |  |
 | **[Contract] **CreatorId | creator_id               |  |
 | **[Contract]** Accounts.address FROM JOIN Accounts ON Accounts.Id = CreatorId | creator                  | Address of the account, which has deployed the contract to the blockchain |
@@ -69,7 +69,7 @@ Comment: *Used to activate accounts that were recommended allocations of tezos t
 | Timestamp | timestamp  | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
 | OpHash | hash | Hash of the operation |
 | AccountId | account_id |  |
-| Accounts.Address FROM JOIN Accounts ON Accounts.Id = AccountId | account | Address of the activated account |
+| Accounts.Address JOIN ON Accounts.Id = AccountId | account | Address of the activated account |
 | Balance | balance | Account activation balance of tezos tokens that were recommended allocations for donations to the Tezos Foundation’s fundraiser |
 
 #### AppState
@@ -83,50 +83,50 @@ Comment:
 | Id |  |  |
 | KnownHead |  |  |
 | LastSync |  |  |
-| Level | level |  |
-| Timestamp | timestamp |  |
-| Protocol | protocol |  |
-| NextProtocol | next_protocol |  |
-| Hash | block_hash |  |
+| Level | level | The height of the block |
+| Timestamp | timestamp | Datetime of the block (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| Protocol | protocol | Protocol hash |
+| NextProtocol | next_protocol | Next protocol hash |
+| Hash | block_hash | Block hash |
 | AccountCounter |  |  |
 | OperationCounter |  |  |
 | ManagerCounter |  |  |
-| AccountsCount | num_accounts |  |
-| BlocksCount | num_blocks |  |
+| AccountsCount | num_accounts | Total number of accounts of all types (user, delegate, contract) seen till this block (inclusive) |
+| BlocksCount |  |  |
 | ProtocolsCount | num_protocols |  |
-| ActivationOpsCount | num_activations |  |
-| BallotOpsCount | num_ballots |  |
-| DelegationOpsCount | num_delegations |  |
-| DoubleBakingOpsCount | num_double_bakings |  |
-| DoubleEndorsingOpsCount | num_double_endorsings |  |
-| EndorsementOpsCount | num_endorsements |  |
-| NonceRevelationOpsCount | num_nonce_revelations |  |
-| OriginationOpsCount | num_originations |  |
-| ProposalOpsCount | num_proposals |  |
-| RevealOpsCount | num_reveals |  |
-| TransactionOpsCount | num_transactions |  |
-| MigrationOpsCount | num_migrations |  |
-| RevelationPenaltyOpsCount | num_revelation_penalties |  |
-| ProposalsCount | num_protocol_proposals |  |
-| CyclesCount | num_cycles |  |
-| QuoteBtc | xtz_btc | XTZ/BTC |
-| QuoteEur | xtz_eur | XTZ/EUR |
+| ActivationOpsCount | num_activations | Total number of account activations applied till this block (inclusive) |
+| BallotOpsCount | num_ballots | Total number of ballot operations applied till this block (inclusive) |
+| DelegationOpsCount | num_delegations | Total number of delegation operations applied till this block (inclusive) |
+| DoubleBakingOpsCount | num_double_bakings | Total number of double baking evidences published till this block (inclusive) |
+| DoubleEndorsingOpsCount | num_double_endorsings | Total number of double endorsing evidences published till this block (inclusive) |
+| EndorsementOpsCount | num_endorsements | Total number of endorsements applied till this block (inclusive) |
+| NonceRevelationOpsCount | num_nonce_revelations | Total number of nonce revelations applied till this block (inclusive) |
+| OriginationOpsCount | num_originations | Total number of originations applied till this block (inclusive) |
+| ProposalOpsCount | num_proposals | Total number of proposal operations applied till this block (inclusive) |
+| RevealOpsCount | num_reveals | Total number of reveal operations applied till this block (inclusive) |
+| TransactionOpsCount | num_transactions | Total number of transactions applied till this block (inclusive) |
+| MigrationOpsCount | num_migrations | Total number of migrations applied till this block (inclusive) |
+| RevelationPenaltyOpsCount | num_revelation_penalties | Total number of revelation penalties applied till this block (inclusive) |
+| ProposalsCount | num_protocol_proposals | Total number of protocol proposals seen till this block (inclusive) |
+| CyclesCount | num_cycles | Total number of cycles |
+| QuoteBtc | xtz_btc | XTZ/BTC price |
+| QuoteEur | xtz_eur | XTZ/EUR price |
 | QuoteLevel |  |  |
-| QuoteUsd | xtz_usd | XTZ/USD |
+| QuoteUsd | xtz_usd | XTZ/USD price |
 
 #### BakerCycles
 
 View name: **rewards**
 
-Comment: *Baker rewards per cycle with breakdown by source*
+Comment: *Baker rewards/penalties per cycle with breakdown by reward/penalty kind*
 
 | Select/Join | As | Comment |
 | ---- | ---- | ---- |
 | Id |  |  |
 | Cycle | cycle | Cycle in which rewards have been or will be earned. |
 | BakerId | baker_id |  |
-| Account.Address FROM JOIN Accounts ON Accounts.Id = BakerId | baker | Baker address |
-| Rolls | rolls |  |
+| Account.Address JOIN ON Accounts.Id = BakerId | baker | Baker address |
+| Rolls | num_rolls |  |
 | StakingBalance | staking_balance | Staking balance of the baker at the snapshot time. |
 | DelegatedBalance | delegated_balance | Balance delegated to the baker at the snapshot time (sum of delegators' balances). |
 | DelegatorsCount | num_delegators | Number of delegators at the snapshot time. |
@@ -175,8 +175,8 @@ Comment: *Baker rewards per cycle with breakdown by source*
 | EndorsementDeposits | endorsement_deposits | Bonds which were locked as a security deposit for endorsed slots. |
 | ExpectedBlocks | expected_blocks | Expected value of how many blocks baker should produce based on baker's rolls, total rolls and blocks per cycle. |
 | ExpectedEndorsements | expected_endorsements | Expected value of how many slots baker should validate based on baker's rolls, total rolls and endorsing slots per cycle. |
-| OwnBlockRewards + ExtraBlockRewards + EndorsementRewards + OwnBlockFees + ExtraBlockFees + RevelationRewards + DoubleBakingRewards + DoubleEndorsingRewards | total_rewards |  |
-| DoubleBakingLostDeposits + DoubleBakingLostRewards + DoubleBakingLostFees + DoubleEndorsingLostDeposits + DoubleEndorsingLostRewards + DoubleEndorsingLostFees + RevelationLostRewards + RevelationLostFees | total_penalties |  |
+| OwnBlockRewards + ExtraBlockRewards + EndorsementRewards + OwnBlockFees + ExtraBlockFees + RevelationRewards + DoubleBakingRewards + DoubleEndorsingRewards | total_rewards | Total cycle rewards (positive) |
+| DoubleBakingLostDeposits + DoubleBakingLostRewards + DoubleBakingLostFees + DoubleEndorsingLostDeposits + DoubleEndorsingLostRewards + DoubleEndorsingLostFees + RevelationLostRewards + RevelationLostFees | total_penalties | Total cycle penalties |
 
 #### BakingRights
 
@@ -190,9 +190,9 @@ Comment:
 | Cycle | cycle | Cycle on which the right can be realized. |
 | Level | level | Level at which a block must be baked or an endorsement must be sent. |
 | BakerId | baker_id |  |
-| Accounts.Address FROM JOIN Accounts ON Accounts.Id = BakerId | baker | Baker address to which baking or endorsing right has been given. |
-| Type | type | `baking` - right to bake (produce) a block;<br /> `endorsing` - right to endorse (validate) a block. |
-| Status | status | `future` - the right is not realized yet;<br /> `realized` - the right was successfully realized;<br /> `uncovered` - the right was not realized due to lack of bonds (for example, when a baker is overdelegated);<br /> `missed` - the right was not realized for no apparent reason (usually due to issues with network or node). |
+| Accounts.Address JOIN ON Accounts.Id = BakerId | baker | Baker address to which baking or endorsing right has been given. |
+| CASE WHEN Type = **1** THEN **baking** WHEN Type = **2** THEN **endorsing** ELSE NULL | type | `baking` - right to bake (produce) a block;<br /> `endorsing` - right to endorse (validate) a block. |
+| CASE WHEN Status = **1** THEN **future** WHEN Status = **2** THEN **realized** WHEN Status = **3** THEN **uncovered** WHEN Status = **4** THEN **missed** ELSE NULL | status | `future` - the right is not realized yet;<br /> `realized` - the right was successfully realized;<br /> `uncovered` - the right was not realized due to lack of bonds (for example, when a baker is overdelegated);<br /> `missed` - the right was not realized for no apparent reason (usually due to issues with network or node). |
 | Priority | priority | Priority (0 - ∞) with which baker can produce a block. If a baker with priority `0` doesn't produce a block within a given time interval, then the right goes to a baker with priority`1`, etc. For `endorsing` rights this field is always `null`. |
 | Slots | num_slots | Number of slots (1 - 32) to be endorsed. For `baking` rights this field is always `null`. |
 
@@ -209,11 +209,11 @@ Comment:  *used to vote for a proposal in a given voting cycle*
 | Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
 | OpHash | hash | Hash of the operation |
 | PeriodId | period_id |  |
-| VotingPeriods.Code JOIN VotingPeriods ON VotingPeriods.Id = PeriodId | voting_period | Index of the voting period for which the ballot was submitted |
+| VotingPeriods.Code JOIN ON VotingPeriods.Id = PeriodId | voting_period | Index of the voting period for which the ballot was submitted |
 | ProposalId | proposal_id |  |
-| Proposals.Hash JOIN Proposals ON Proposals.Id = ProposalId | proposal | Hash of the proposal for which ballot was submitted |
+| Proposals.Hash JOIN ON Proposals.Id = ProposalId | proposal | Hash of the proposal for which ballot was submitted |
 | SenderId | baker_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = SenderId | baker | Information about the delegate (baker), submitted the ballot |
+| Accounts.Address JOIN ON Accounts.Id = SenderId | baker | Information about the delegate (baker), submitted the ballot |
 | Rolls | num_rolls | Number of baker's rolls (baker's voting power) |
 | Vote | vote          | Vote, given in the ballot (`yay`, `nay`, or `pass`) |
 
@@ -256,9 +256,8 @@ Comment:
 | Reward | reward | Reward of the baker for producing the block (micro tez) |
 | Fees | fees | Total fee paid by all operations, included in the block |
 | BakerId | baker_id | Accounts |
-| Accounts.Address JOIN Accounts ON Accounts.Id = BakerId | baker | Address of the delegate (baker), produced the block |
+| Accounts.Address JOIN ON Accounts.Id = BakerId | baker | Address of the delegate (baker), produced the block |
 | RevelationId | revelation_id |  |
-|                                                         |                                    |  |
 | ResetDeactivation |  |  |
 
 #### Cycles
@@ -298,17 +297,17 @@ Comment: *used to delegate funds to a delegate (an implicit account registered a
 | AllocationFee |  |  |
 | GasLimit | gas_limit | A cap on the amount of gas a given operation can consume |
 | GasUsed | consumed_gas | Amount of gas, consumed by the operation |
-| StorageLimit | storage_limit |  |
-| StorageUsed | paid_storage_size_diff |  |
+| StorageLimit |  |  |
+| StorageUsed |  |  |
 | CASE WHEN Status = 1 THEN **applied** WHEN Status = 2 THEN **backtracked** WHEN Status = 3 THEN **skipped** WHEN Status = 4 THEN **failed** ELSE NULL | status | Operation status (`applied` - an operation applied by the node and successfully added to the blockchain, `failed` - an operation which failed with some particular error (not enough balance, gas limit, etc), `backtracked` - an operation which was successful but reverted due to one of the following operations in the same operation group was failed, `skipped` - all operations after the failed one in an operation group) |
 | Errors | errors | List of errors provided by the node, which has injected the operation to the blockchain. `null` if there is no errors |
 | InitiatorId | initiator_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = InitiatorId | initiator | Address of the initiator of the delegation contract call |
+| Accounts.Address JOIN ON Accounts.Id = InitiatorId | initiator | Address of the initiator of the delegation contract call |
 | Nonce | nonce | An account nonce which is used to prevent internal operation replay |
 | DelegateId | delegate_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = DelegateId | delegate | Address of the delegate (baker) that accepted the delegation. `null` if delegate is not specified (undelegation operation) |
+| Accounts.Address JOIN ON Accounts.Id = DelegateId | delegate | Address of the delegate (baker) that accepted the delegation. `null` if delegate is not specified (undelegation operation) |
 | PrevDelegateId | prev_delegate_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = PrevDelegateId | prev_delegate | Address of the previous delegate of the account. `null` if there is no previous delegate |
+| Accounts.Address JOIN ON Accounts.Id = PrevDelegateId | prev_delegate | Address of the previous delegate of the account. `null` if there is no previous delegate |
 | ResetDeactivation |  |  |
 
 #### DelegatorCycles
@@ -321,10 +320,10 @@ Comment:
 | ---- | ---- | ----------- |
 | Id |  |  |
 | Cycle | cycle        |  |
-| DelegatorId | delegator_id | Accounts |
-| Accounts.Address JOIN Accounts ON Accounts.Id = DelegatorId | delegator |  |
-| BakerId | baker_id | Accounts |
-| Accounts.Address JOIN Accounts ON Accounts.Id = BakerId | baker |  |
+| DelegatorId | delegator_id |  |
+| Accounts.Address JOIN ON Accounts.Id = DelegatorId | delegator |  |
+| BakerId | baker_id |  |
+| Accounts.Address JOIN ON Accounts.Id = BakerId | baker |  |
 | Balance | balance |  |
 
 #### DoubleBakingOps
@@ -344,7 +343,7 @@ Comment:
 | Accounts.Address JOIN Accounts ON Accounts.Id = AccuserId | accuser | Address of the baker (delegate), produced the block, in which the operation was included |
 | AccuserReward | accuser_reward | Reward of the baker (delegate), produced the block, in which the operation was included |
 | OffenderId | offender_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = OffenderId | offender | Address of the baker (delegate), accused for producing two different blocks at the same height |
+| Accounts.Address JOIN ON Accounts.Id = OffenderId | offender | Address of the baker (delegate), accused for producing two different blocks at the same height |
 | OffenderLostDeposit | offender_lost_deposits | Amount of frozen security deposit, lost by accused baker (delegate) |
 | OffenderLostReward | offender_lost_rewards | Amount of frozen rewards, lost by accused baker (delegate) |
 | OffenderLostFee | offender_lost_fees | Amount of frozen fees, lost by accused baker (delegate) |
@@ -355,21 +354,21 @@ View name: **double_endorsings**
 
 Comment:
 
-| Name                                                       | As                     | Comment                                                      |
-| ---------------------------------------------------------- | ---------------------- | ------------------------------------------------------------ |
-| Id                                                         |                        |                                                              |
-| Level                                                      | level                  | The height of the block from the genesis block, in which the operation was included |
-| Timestamp                                                  | timestamp              | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
-| OpHash                                                     | hash                   | Hash of the operation                                        |
-| AccusedLevel                                               | accused_level          | The height of the block from the genesis block, at which double endorsing occurred |
-| AccuserId                                                  | accuser_id             |                                                              |
-| Accounts.Address JOIN Accounts ON Accounts.Id = AccuserId  | accuser                | Address of the baker (delegate), produced the block, in which the operation was included |
-| AccuserReward                                              | accuser_reward         | Reward of the baker (delegate), produced the block, in which the operation was included |
-| OffenderId                                                 | offender_id            |                                                              |
-| Accounts.Address JOIN Accounts ON Accounts.Id = OffenderId | offender               | Address of the baker (delegate), accused for producing two different endorsements at the same height |
-| OffenderLostDeposit                                        | offender_lost_deposits | Amount of frozen security deposit, lost by accused baker (delegate) |
-| OffenderLostReward                                         | offender_lost_rewards  | Amount of frozen rewards, lost by accused baker (delegate)   |
-| OffenderLostFee                                            | offender_lost_fees     | Amount of frozen fees, lost by accused baker (delegate)      |
+| Name                                              | As                     | Comment                                                      |
+| ------------------------------------------------- | ---------------------- | ------------------------------------------------------------ |
+| Id                                                |                        |                                                              |
+| Level                                             | level                  | The height of the block from the genesis block, in which the operation was included |
+| Timestamp                                         | timestamp              | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| OpHash                                            | hash                   | Hash of the operation                                        |
+| AccusedLevel                                      | accused_level          | The height of the block from the genesis block, at which double endorsing occurred |
+| AccuserId                                         | accuser_id             |                                                              |
+| Accounts.Address JOIN ON Accounts.Id = AccuserId  | accuser                | Address of the baker (delegate), produced the block, in which the operation was included |
+| AccuserReward                                     | accuser_reward         | Reward of the baker (delegate), produced the block, in which the operation was included |
+| OffenderId                                        | offender_id            |                                                              |
+| Accounts.Address JOIN ON Accounts.Id = OffenderId | offender               | Address of the baker (delegate), accused for producing two different endorsements at the same height |
+| OffenderLostDeposit                               | offender_lost_deposits | Amount of frozen security deposit, lost by accused baker (delegate) |
+| OffenderLostReward                                | offender_lost_rewards  | Amount of frozen rewards, lost by accused baker (delegate)   |
+| OffenderLostFee                                   | offender_lost_fees     | Amount of frozen fees, lost by accused baker (delegate)      |
 
 #### EndorsementOps
 
@@ -384,7 +383,7 @@ Comment:
 | Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
 | OpHash | hash | Hash of the operation |
 | DelegateId | delegate_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = DelegateId | delegate | Address of the baker (delegate) who sent the operation |
+| Accounts.Address JOIN ON Accounts.Id = DelegateId | delegate | Address of the baker (delegate) who sent the operation |
 | Slots | num_slots | Number of assigned endorsement slots (out of 32) to the baker (delegate) who sent the operation |
 | Reward | reward | Reward of the baker (delegate) for the operation |
 | ResetDeactivation |  |  |
@@ -401,8 +400,8 @@ Comment: *A result of the context (database) migration during a protocol update 
 | Level | level | The height of the block from the genesis block, in which the operation was included |
 | Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
 | AccountId | account_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = AccountId | account | Address of the account whose balance has updated as a result of the operation |
-| Kind | kind | Kind of the migration<br /> `bootstrap` - Balance updates, included in the first block after genesis `activate_delegate` - registering a new baker (delegator) during protocol migration `airdrop` - airdrop of 1 micro tez during Babylon protocol upgrade `proposal_invoice` - invoice for creation a proposal for protocol upgrade |
+| Accounts.Address JOIN ON Accounts.Id = AccountId | account | Address of the account whose balance has updated as a result of the operation |
+| CASE WHEN Kind = **1** THEN **bootstrap** WHEN Kind = **2** THEN **activate_delegate** WHEN Kind = **3** THEN **airdrop** WHEN Kind = **4** THEN **proposal_invoice** ELSE NULL | kind | Kind of the migration<br /> `bootstrap` - Balance updates, included in the first block after genesis `activate_delegate` - registering a new baker (delegator) during protocol migration `airdrop` - airdrop of 1 micro tez during Babylon protocol upgrade `proposal_invoice` - invoice for creation a proposal for protocol upgrade |
 | BalanceChange | balance_change | The amount for which the operation updated the balance (micro tez) |
 
 #### NonceRevelationOps
@@ -418,9 +417,9 @@ Comment:
 | Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
 | OpHash | hash | Hash of the operation. |
 | BakerId | baker_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = BakerId | baker | Address of the delegate (baker), who produced the block with the operation. |
+| Accounts.Address JOIN ON Accounts.Id = BakerId | baker | Address of the delegate (baker), who produced the block with the operation. |
 | SenderId | sender_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = SenderId | sender | Address of the delegate (baker), who revealed the nonce (sent the operation). |
+| Accounts.Address JOIN ON Accounts.Id = SenderId | sender | Address of the delegate (baker), who revealed the nonce (sent the operation). |
 | RevealedLevel | revealed_level | Block height of the block, where seed nonce hash is stored. |
 
 #### OriginationOps
@@ -436,7 +435,7 @@ Comment:
 | Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
 | OpHash | hash | Hash of the operation |
 | SenderId | sender_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = SenderId | sender | Address of the account, created a contract |
+| Accounts.Address JOIN ON Accounts.Id = SenderId | sender | Address of the account, created a contract |
 | Counter | counter | An account nonce which is used to prevent operation replay |
 | BakerFee | baker_fee | Fee to the baker, produced block, in which the operation was included (micro tez) |
 | StorageFee | storage_burn | The amount of funds burned from the sender account for contract storage in the blockchain (micro tez) |
@@ -448,13 +447,13 @@ Comment:
 | CASE WHEN Status = **1** THEN **applied** WHEN Status = **2** THEN **backtracked** WHEN Status = **3** THEN **skipped** WHEN Status = **4** THEN **failed** ELSE NULL | status | Operation status (`applied` - an operation applied by the node and successfully added to the blockchain, `failed` - an operation which failed with some particular error (not enough balance, gas limit, etc), `backtracked` - an operation which was a successful but reverted due to one of the following operations in the same operation group was failed, `skipped` - all operations after the failed one in an operation group) |
 | Errors | errors | List of errors provided by the node, injected the operation to the blockchain. `null` if there is no errors |
 | InitiatorId | initiator_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = InitiatorId | initiator | Address of the initiator of the contract call |
+| Accounts.Address JOIN ON Accounts.Id = InitiatorId | initiator | Address of the initiator of the contract call |
 | Nonce | nonce | An account nonce which is used to prevent internal operation replay |
 | ManagerId |  |  |
 | DelegateId | delegate_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = DelegateId | delegate | Address of the baker (delegate), which was marked as a contract delegate in the operation |
+| Accounts.Address JOIN ON Accounts.Id = DelegateId | delegate | Address of the baker (delegate), which was marked as a contract delegate in the operation |
 | ContractId | contract_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = ContractId | originated_contract | Address of the originated ( deployed / created ) contract |
+| Accounts.Address JOIN ON Accounts.Id = ContractId | originated_contract | Address of the originated ( deployed / created ) contract |
 | Balance | balance | Initial contract balance (micro tez), transferred from the operation sender |
 
 #### ProposalOps
@@ -628,21 +627,17 @@ Comment:
 
 #### VotingEpoches
 
-View name: **voting_epoches**
-
-Comment:
-
 | Select/Join | As | Comment |
 | ---- | ---- | ----------- |
-| Id |          |         |
-| Level | level |  |
-| Progress | progress |  |
+| Id |      |         |
+| Level |  |  |
+| Progress |  |  |
 
 #### VotingPeriods
 
 View name: **voting_periods**
 
-Comment:
+Comment: 
 
 | Select/Join | As | Comment |
 | ---- | ---- | ----------- |
@@ -673,12 +668,14 @@ Comment:
 
 View name: **voting_snapshots**
 
+Comment: 
+
 | Select/Join | As | Comment |
 | ---- | ---- | -------- |
 | Id |  |  |
 | Level | level |  |
 | PeriodId | period_id |  |
-|  | voting_period |  |
+| Period.Code JOIN ON VoringPeriods.Id = PeriodId | voting_period |  |
 | DelegateId | delegate_id |  |
-|  | delegate |  |
+| Accounts.Address JOIN ON Accounts.Id = DelegateId | delegate |  |
 | Rolls | num_rolls |  |
