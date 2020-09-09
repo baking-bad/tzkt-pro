@@ -300,10 +300,10 @@ Comment: *used to delegate funds to a delegate (an implicit account registered a
 | GasUsed | consumed_gas | Amount of gas, consumed by the operation |
 | StorageLimit | storage_limit |  |
 | StorageUsed | paid_storage_size_diff |  |
-| Status | status | Operation status (`applied` - an operation applied by the node and successfully added to the blockchain, `failed` - an operation which failed with some particular error (not enough balance, gas limit, etc), `backtracked` - an operation which was successful but reverted due to one of the following operations in the same operation group was failed, `skipped` - all operations after the failed one in an operation group) |
+| CASE WHEN Status = 1 THEN **applied** WHEN Status = 2 THEN **backtracked** WHEN Status = 3 THEN **skipped** WHEN Status = 4 THEN **failed** ELSE NULL | status | Operation status (`applied` - an operation applied by the node and successfully added to the blockchain, `failed` - an operation which failed with some particular error (not enough balance, gas limit, etc), `backtracked` - an operation which was successful but reverted due to one of the following operations in the same operation group was failed, `skipped` - all operations after the failed one in an operation group) |
 | Errors | errors | List of errors provided by the node, which has injected the operation to the blockchain. `null` if there is no errors |
-| InitiatorId | source_id |  |
-| Accounts.Address JOIN Accounts ON Accounts.Id = InitiatorId | source | Address of the initiator of the delegation contract call |
+| InitiatorId | initiator_id |  |
+| Accounts.Address JOIN Accounts ON Accounts.Id = InitiatorId | initiator | Address of the initiator of the delegation contract call |
 | Nonce | nonce | An account nonce which is used to prevent internal operation replay |
 | DelegateId | delegate_id |  |
 | Accounts.Address JOIN Accounts ON Accounts.Id = DelegateId | delegate | Address of the delegate (baker) that accepted the delegation. `null` if delegate is not specified (undelegation operation) |
@@ -411,211 +411,274 @@ View name: **nonce_revelations**
 
 Comment: 
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) | Note: This is a Foreign Key to `Blocks.Level`.<fk table='Blocks' column='Level'/> | Yes |
-| Timestamp | string (timestamp without time zone) |  | Yes |
-| OpHash | string (character) |  | Yes |
-| BakerId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| SenderId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| RevealedLevel | integer (integer) |  | Yes |
+| Select/Join | As | Commen |
+| ---- | ---- | ----------- |
+| Id |                |                                                              |
+| Level | level          | The height of the block from the genesis block, in which the operation was included. |
+| Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| OpHash | hash | Hash of the operation. |
+| BakerId | baker_id |  |
+| Accounts.Address JOIN Accounts ON Accounts.Id = BakerId | baker | Address of the delegate (baker), who produced the block with the operation. |
+| SenderId | sender_id |  |
+| Accounts.Address JOIN Accounts ON Accounts.Id = SenderId | sender | Address of the delegate (baker), who revealed the nonce (sent the operation). |
+| RevealedLevel | revealed_level | Block height of the block, where seed nonce hash is stored. |
 
 #### OriginationOps
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) | Note: This is a Foreign Key to `Blocks.Level`.<fk table='Blocks' column='Level'/> | Yes |
-| Timestamp | string (timestamp without time zone) |  | Yes |
-| OpHash | string (character) |  | Yes |
-| SenderId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| Counter | integer (integer) |  | Yes |
-| BakerFee | integer (bigint) |  | Yes |
-| StorageFee | integer (bigint) |  | No |
-| AllocationFee | integer (bigint) |  | No |
-| GasLimit | integer (integer) |  | Yes |
-| GasUsed | integer (integer) |  | Yes |
-| StorageLimit | integer (integer) |  | Yes |
-| StorageUsed | integer (integer) |  | Yes |
-| Status | integer (smallint) |  | Yes |
-| Errors | string (text) |  | No |
-| InitiatorId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | No |
-| Nonce | integer (integer) |  | No |
-| ManagerId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | No |
-| DelegateId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | No |
-| ContractId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | No |
-| Balance | integer (bigint) |  | Yes |
+View name: **originations**
+
+Comment: 
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |  |  |
+| Level | level | The height of the block from the genesis block, in which the operation was included |
+| Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| OpHash | hash | Hash of the operation |
+| SenderId | sender_id |  |
+| Accounts.Address JOIN Accounts ON Accounts.Id = SenderId | sender | Address of the account, created a contract |
+| Counter | counter | An account nonce which is used to prevent operation replay |
+| BakerFee | baker_fee | Fee to the baker, produced block, in which the operation was included (micro tez) |
+| StorageFee | storage_burn | The amount of funds burned from the sender account for contract storage in the blockchain (micro tez) |
+| AllocationFee | allocation_burn | The amount of funds burned from the sender account for contract account creation (micro tez) |
+| GasLimit | gas_limit | A cap on the amount of gas a given operation can consume |
+| GasUsed | consumed_gas | Amount of gas, consumed by the operation |
+| StorageLimit | storage_limit | A cap on the amount of storage a given operation can consume |
+| StorageUsed | paid_storage_size_diff | Amount of storage, consumed by the operation, that is subject to pay |
+| CASE WHEN Status = **1** THEN **applied** WHEN Status = **2** THEN **backtracked** WHEN Status = **3** THEN **skipped** WHEN Status = **4** THEN **failed** ELSE NULL | status | Operation status (`applied` - an operation applied by the node and successfully added to the blockchain, `failed` - an operation which failed with some particular error (not enough balance, gas limit, etc), `backtracked` - an operation which was a successful but reverted due to one of the following operations in the same operation group was failed, `skipped` - all operations after the failed one in an operation group) |
+| Errors | errors | List of errors provided by the node, injected the operation to the blockchain. `null` if there is no errors |
+| InitiatorId | initiator_id |  |
+| Accounts.Address JOIN Accounts ON Accounts.Id = InitiatorId | initiator | Address of the initiator of the contract call |
+| Nonce | nonce | An account nonce which is used to prevent internal operation replay |
+| ManagerId |  |  |
+| DelegateId | delegate_id |  |
+| Accounts.Address JOIN Accounts ON Accounts.Id = DelegateId | delegate | Address of the baker (delegate), which was marked as a contract delegate in the operation |
+| ContractId | contract_id |  |
+| Accounts.Address JOIN Accounts ON Accounts.Id = ContractId | originated_contract | Address of the originated ( deployed / created ) contract |
+| Balance | balance | Initial contract balance (micro tez), transferred from the operation sender |
 
 #### ProposalOps
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) | Note: This is a Foreign Key to `Blocks.Level`.<fk table='Blocks' column='Level'/> | Yes |
-| Timestamp | string (timestamp without time zone) |  | Yes |
-| OpHash | string (character) |  | Yes |
-| PeriodId | integer (integer) | Note: This is a Foreign Key to `VotingPeriods.Id`.<fk table='VotingPeriods' column='Id'/> | Yes |
-| ProposalId | integer (integer) | Note: This is a Foreign Key to `Proposals.Id`.<fk table='Proposals' column='Id'/> | Yes |
-| SenderId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| Rolls | integer (integer) |  | Yes |
-| Duplicated | boolean (boolean) |  | Yes |
+View name: **proposals**
+
+Comment:
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |                   |                                                              |
+| Level | level | The height of the block from the genesis block, in which the operation was included |
+| Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| OpHash | hash | Hash of the operation |
+| PeriodId | period_id |  |
+| VotingPeriods.Code JOIN ON VotingPeriods.Id = PeriodId | voting_period | Index of the proposal period for which the proposal was submitted (upvoted) |
+| ProposalId | proposal_id |  |
+| Proposals.Hash JOIN ON Proposals.Id = ProposalId | protocol_proposal | Hash of the submitted (upvoted) proposal |
+| SenderId | baker_id          |  |
+| Accounts.Address JOIN ON Accounts.Id = SenderId | baker | Address of the baker (delegate), submitted (upvoted) the proposal operation |
+| Rolls | num_rolls | Number of baker's rolls (baker's voting power) |
+| Duplicated | is_duplicate | Indicates whether proposal upvote has already been pushed. Duplicated proposal operations are not counted when selecting proposal-winner. |
 
 #### Proposals
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Hash | string (character) |  | No |
-| Status | integer (integer) |  | Yes |
-| InitiatorId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| Upvotes | integer (integer) |  | Yes |
-| ProposalPeriodId | integer (integer) | Note: This is a Foreign Key to `VotingPeriods.Id`.<fk table='VotingPeriods' column='Id'/> | Yes |
-| ExplorationPeriodId | integer (integer) | Note: This is a Foreign Key to `VotingPeriods.Id`.<fk table='VotingPeriods' column='Id'/> | No |
-| TestingPeriodId | integer (integer) | Note: This is a Foreign Key to `VotingPeriods.Id`.<fk table='VotingPeriods' column='Id'/> | No |
-| PromotionPeriodId | integer (integer) | Note: This is a Foreign Key to `VotingPeriods.Id`.<fk table='VotingPeriods' column='Id'/> | No |
+View name: **protocol_proposals**
+
+Comment: 
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |                       |                                                              |
+| Hash | hash | Hash of the proposal, which representing a tarball of concatenated .ml/.mli source files |
+| CASE WHEN Status = **1** THEN **active** WHEN Status = **2** THEN **accepted** WHEN Status = **3** THEN **skipped** WHEN Status = **4** THEN **rejected** ELSE NULL | status | Status of the proposal `active` - the proposal in the active state `accepted` - accepted for protocol upgrade proposal `skipped` - the proposal didn't pass the Proposal Period `rejected` - the proposal didn't reach a quorum during the Exploration or Promotion Period |
+| InitiatorId | baker_id |  |
+| Accounts.Address JOIN ON Accounts.Id = InitiatorId | baker | Address of the baker (delegate) submitted the proposal |
+| Upvotes | total_rolls | The total number of rolls of all the bakers (delegates) who upvoted the proposal |
+| ProposalPeriodId | proposal_period_id |  |
+|  | proposal_period |  |
+| ExplorationPeriodId | exploration_period_id |  |
+| TestingPeriodId | testing_period_id |  |
+| PromotionPeriodId | promotion_period_id |  |
 
 #### Protocols
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Code | integer (integer) |  | Yes |
-| Hash | string (character) |  | Yes |
-| FirstLevel | integer (integer) |  | Yes |
-| LastLevel | integer (integer) |  | Yes |
-| PreservedCycles | integer (integer) |  | Yes |
-| BlocksPerCycle | integer (integer) |  | Yes |
-| BlocksPerCommitment | integer (integer) |  | Yes |
-| BlocksPerSnapshot | integer (integer) |  | Yes |
-| BlocksPerVoting | integer (integer) |  | Yes |
-| TimeBetweenBlocks | integer (integer) |  | Yes |
-| EndorsersPerBlock | integer (integer) |  | Yes |
-| HardOperationGasLimit | integer (integer) |  | Yes |
-| HardOperationStorageLimit | integer (integer) |  | Yes |
-| HardBlockGasLimit | integer (integer) |  | Yes |
-| TokensPerRoll | integer (bigint) |  | Yes |
-| RevelationReward | integer (bigint) |  | Yes |
-| BlockDeposit | integer (bigint) |  | Yes |
-| BlockReward0 | integer (bigint) |  | Yes |
-| BlockReward1 | integer (bigint) |  | Yes |
-| EndorsementDeposit | integer (bigint) |  | Yes |
-| EndorsementReward0 | integer (bigint) |  | Yes |
-| EndorsementReward1 | integer (bigint) |  | Yes |
-| OriginationSize | integer (integer) |  | Yes |
-| ByteCost | integer (integer) |  | Yes |
+View name: **protocols**
+
+Comment:
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |                              |                                                              |
+| Code | code | Protocol code, representing a number of protocol changes since genesis (mod 256, but `-1` for the genesis block) |
+| Hash | hash | Hash of the protocol |
+| FirstLevel | first_level | Block height where the protocol was applied |
+| LastLevel | last_level | Block height where the protocol ends. `null` if the protocol is active |
+| PreservedCycles | preserved_cycles |  |
+| BlocksPerCycle | blocks_per_cycle |  |
+| BlocksPerCommitment | blocks_per_comitment |  |
+| BlocksPerSnapshot | blocks_per_snapshot |  |
+| BlocksPerVoting | blocks_per_voting |  |
+| TimeBetweenBlocks | time_between_blocks |  |
+| EndorsersPerBlock | endorsers_per_block |  |
+| HardOperationGasLimit | hard_operation_gas_limit |  |
+| HardOperationStorageLimit | hard_operation_storage_limit |  |
+| HardBlockGasLimit | hard_block_gas_limit |  |
+| TokensPerRoll | tokens_per_roll |  |
+| RevelationReward | revelation_reward |  |
+| BlockDeposit | block_deposit |  |
+| BlockReward0 | block_reward_0 |  |
+| BlockReward1 | block_reward_1 |  |
+| EndorsementDeposit | endorsement_deposit |  |
+| EndorsementReward0 | endorsement_reward_0 |  |
+| EndorsementReward1 | endorsement_reward_1 |  |
+| OriginationSize | origination_size             |  |
+| ByteCost | byte_cost |  |
 
 #### RevealOps
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) | Note: This is a Foreign Key to `Blocks.Level`.<fk table='Blocks' column='Level'/> | Yes |
-| Timestamp | string (timestamp without time zone) |  | Yes |
-| OpHash | string (character) |  | Yes |
-| SenderId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| Counter | integer (integer) |  | Yes |
-| BakerFee | integer (bigint) |  | Yes |
-| StorageFee | integer (bigint) |  | No |
-| AllocationFee | integer (bigint) |  | No |
-| GasLimit | integer (integer) |  | Yes |
-| GasUsed | integer (integer) |  | Yes |
-| StorageLimit | integer (integer) |  | Yes |
-| StorageUsed | integer (integer) |  | Yes |
-| Status | integer (smallint) |  | Yes |
-| Errors | string (text) |  | No |
+View name: **reveals**
+
+Comment: 
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |              |                                                              |
+| Level | level | The height of the block from the genesis block, in which the operation was included |
+| Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| OpHash | hash | Hash of the operation |
+| SenderId | sender_id |  |
+| Accounts.Address JOIN ON Accounts.Id = SenderId | sender | Address of the account who has sent the operation |
+| Counter | counter | An account nonce which is used to prevent operation replay |
+| BakerFee | baker_fee | Fee to the baker, produced block, in which the operation was included (micro tez) |
+| StorageFee |  |  |
+| AllocationFee |  |  |
+| GasLimit | gas_limit | A cap on the amount of gas a given operation can consume |
+| GasUsed | consumed_gas | Amount of gas, consumed by the operation |
+| StorageLimit |  |  |
+| StorageUsed |  |  |
+| CASE WHEN Status = **1** THEN **applied** WHEN Status = **2** THEN **backtracked** WHEN Status = **3** THEN **skipped** WHEN Status = **4** THEN **failed** ELSE NULL | status | Operation status (`applied` - an operation applied by the node and successfully added to the blockchain, `failed` - an operation which failed with some particular error (not enough balance, gas limit, etc), `backtracked` - an operation which was successful but reverted due to one of the following operations in the same operation group was failed, `skipped` - all operations after the failed one in an operation group) |
+| Errors | errors | List of errors provided by the node, injected the operation to the blockchain. `null` if there is no errors |
 
 #### RevelationPenaltyOps
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) | Note: This is a Foreign Key to `Blocks.Level`.<fk table='Blocks' column='Level'/> | Yes |
-| Timestamp | string (timestamp without time zone) |  | Yes |
-| BakerId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| MissedLevel | integer (integer) |  | Yes |
-| LostReward | integer (bigint) |  | Yes |
-| LostFees | integer (bigint) |  | Yes |
+View name: **revelation_penalties**
+
+Comment: *operation, in which rewards were lost due to unrevealed seed nonces by the delegate (synthetic type)*
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |              |                                                              |
+| Level | level | The height of the block from the genesis block, in which the operation was included |
+| Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| BakerId | baker_id |  |
+| Accounts.Address JOIN ON Accounts.Id = BakerId | baker | Address of the delegate (baker) who has lost rewards due to unrevealed seed nonces |
+| MissedLevel | missed_level | Height of the block, which contains hash of the seed nonce, which was to be revealed |
+| LostReward | lost_rewards | Reward for baking the block, which was lost due to unrevealed seed nonces (micro tez) |
+| LostFees | lost_fees | Lost due to unrevealed seed nonce total fee paid by all operations, included in the block, which was to be revealed (micro tez) |
 
 #### SnapshotBalances
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) |  | Yes |
-| Balance | integer (bigint) |  | Yes |
-| AccountId | integer (integer) |  | Yes |
-| DelegateId | integer (integer) |  | No |
+View name: **balance_snapshots**
+
+Comment: 
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |             |         |
+| Level | level |  |
+| Balance | balance |  |
+| AccountId | account_id |  |
+| Accounts.Address JOIN ON Accounts.Id = AccountId | account | |
+| DelegateId | delegate_id |  |
+| Accounts.Address JOIN ON Accounts.Id = DelegateId | delegate | |
 
 #### TransactionOps
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) | Note: This is a Foreign Key to `Blocks.Level`.<fk table='Blocks' column='Level'/> | Yes |
-| Timestamp | string (timestamp without time zone) |  | Yes |
-| OpHash | string (character) |  | Yes |
-| SenderId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | Yes |
-| Counter | integer (integer) |  | Yes |
-| BakerFee | integer (bigint) |  | Yes |
-| StorageFee | integer (bigint) |  | No |
-| AllocationFee | integer (bigint) |  | No |
-| GasLimit | integer (integer) |  | Yes |
-| GasUsed | integer (integer) |  | Yes |
-| StorageLimit | integer (integer) |  | Yes |
-| StorageUsed | integer (integer) |  | Yes |
-| Status | integer (smallint) |  | Yes |
-| Errors | string (text) |  | No |
-| InitiatorId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | No |
-| Nonce | integer (integer) |  | No |
-| TargetId | integer (integer) | Note: This is a Foreign Key to `Accounts.Id`.<fk table='Accounts' column='Id'/> | No |
-| ResetDeactivation | integer (integer) |  | No |
-| Amount | integer (bigint) |  | Yes |
-| Parameters | string (text) |  | No |
-| InternalOperations | integer (smallint) |  | No |
+View name: **transactions**
+
+Comment: 
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |                           |                                                              |
+| Level | level | The height of the block from the genesis block, in which the operation was included |
+| Timestamp | timestamp | Datetime of the block, in which the operation was included (ISO 8601, e.g. `2020-02-20T02:40:57Z`) |
+| OpHash | hash | Hash of the operation |
+| SenderId | sender_id |  |
+|  | sender | Address of the account sent the transaction |
+| Counter | counter | An account nonce which is used to prevent operation replay |
+| BakerFee | baker_fee | Fee to the baker, produced block, in which the operation was included (micro tez) |
+| StorageFee | storage_burn | The amount of funds burned from the sender account for used the blockchain storage (micro tez) |
+| AllocationFee | allocation_burn | The amount of funds burned from the sender account for account creation (micro tez) |
+| GasLimit | gas_limit | A cap on the amount of gas a given operation can consume |
+| GasUsed | consumed_gas | Amount of gas, consumed by the operation |
+| StorageLimit | storage_limit | A cap on the amount of storage a given operation can consume |
+| StorageUsed | paid_storage_size_diff | Amount of storage, consumed by the operation |
+| CASE WHEN Status = **1** THEN **applied** WHEN Status = **2** THEN **backtracked** WHEN Status = **3** THEN **skipped** WHEN Status = **4** THEN **failed** ELSE NULL | status | Operation status (`applied` - an operation applied by the node and successfully added to the blockchain, `failed` - an operation which failed with some particular error (not enough balance, gas limit, etc), `backtracked` - an operation which was successful but reverted due to one of the following operations in the same operation group was failed, `skipped` - all operations after the failed one in an operation group) |
+| Errors | errors | List of errors provided by the node, injected the operation to the blockchain. `null` if there is no errors |
+| InitiatorId | initiator_id |  |
+|  | initiator | Address of the initiator of the transaction call |
+| Nonce | nonce | An account nonce which is used to prevent internal operation replay |
+| TargetId | destination_id |  |
+|  | destination | Destination address |
+| ResetDeactivation |  |  |
+| Amount | amount | The transaction amount (micro tez) |
+| Parameters | parameters | Parameters/code, passed to the target contract |
+| InternalOperations & 1 | has_internal_delegations | At least one internal delegation operation |
+| InternalOperations & 2 | has_internal_originations | At least one internal origination operation |
+| InternalOperations & 4 | has_internal_transactions | At least one internal transaction operation |
 
 #### VotingEpoches
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Level | integer (integer) |  | Yes |
-| Progress | integer (integer) |  | Yes |
+View name: **voting_epoches**
+
+Comment:
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |          |         |
+| Level | level |  |
+| Progress | progress |  |
 
 #### VotingPeriods
 
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| Id | integer (integer) | Note: This is a Primary Key.<pk/> | Yes |
-| Code | integer (integer) |  | Yes |
-| EpochId | integer (integer) | Note: This is a Foreign Key to `VotingEpoches.Id`.<fk table='VotingEpoches' column='Id'/> | Yes |
-| Kind | integer (integer) |  | Yes |
-| StartLevel | integer (integer) |  | Yes |
-| EndLevel | integer (integer) |  | Yes |
-| ProposalId | integer (integer) |  | No |
-| TotalStake | integer (integer) |  | No |
-| Participation | integer (integer) |  | No |
-| Quorum | integer (integer) |  | No |
-| Abstainings | integer (integer) |  | No |
-| Approvals | integer (integer) |  | No |
-| Refusals | integer (integer) |  | No |
-| PromotionPeriod_ProposalId | integer (integer) |  | No |
-| PromotionPeriod_TotalStake | integer (integer) |  | No |
-| PromotionPeriod_Participation | integer (integer) |  | No |
-| PromotionPeriod_Quorum | integer (integer) |  | No |
-| PromotionPeriod_Abstainings | integer (integer) |  | No |
-| PromotionPeriod_Approvals | integer (integer) |  | No |
-| PromotionPeriod_Refusals | integer (integer) |  | No |
-| TestingPeriod_ProposalId | integer (integer) |  | No |
+View name: **voting_periods**
+
+Comment:
+
+| Select/Join | As | Comment |
+| ---- | ---- | ----------- |
+| Id |                   |         |
+| Code | code |  |
+| EpochId |  |  |
+| Kind | kind |  |
+| StartLevel | start_level |  |
+| EndLevel | end_level |  |
+| ProposalId | proposal_id |  |
+|  | proposal | |
+| TotalStake | total_stake |  |
+| Participation | participation |  |
+| Quorum | quorum |  |
+| Abstainings | integer (integer) |  |
+| Approvals | integer (integer) |  |
+| Refusals | integer (integer) |  |
+| PromotionPeriod_ProposalId | integer (integer) |  |
+| PromotionPeriod_TotalStake | integer (integer) |  |
+| PromotionPeriod_Participation | integer (integer) |  |
+| PromotionPeriod_Quorum | integer (integer) |  |
+| PromotionPeriod_Abstainings | integer (integer) |  |
+| PromotionPeriod_Approvals | integer (integer) |  |
+| PromotionPeriod_Refusals | integer (integer) |  |
+| TestingPeriod_ProposalId | integer (integer) |  |
 
 #### VotingSnapshots
 
-View name: **VotingSnapshots**
+View name: **voting_snapshots**
 
-| Name | Select | Join | Comment |
-| ---- | ---- | ----------- | -------- |
-| Id |  |  |  |
-| Level | + |  |  |
-| PeriodId | PeriodCode | VotingPeriods |  |
-| DelegateId | DelegateAddress | Accounts |  |
-| Rolls | + |  |  |
+| Select/Join | As | Comment |
+| ---- | ---- | -------- |
+| Id |  |  |
+| Level | level |  |
+| PeriodId | period_id |  |
+|  | voting_period |  |
+| DelegateId | delegate_id |  |
+|  | delegate |  |
+| Rolls | num_rolls |  |
