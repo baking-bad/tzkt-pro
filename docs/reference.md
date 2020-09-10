@@ -111,7 +111,7 @@ Comment:
 | CyclesCount | num_cycles | Total number of cycles |
 | QuoteBtc | xtz_btc | XTZ/BTC price |
 | QuoteEur | xtz_eur | XTZ/EUR price |
-| QuoteLevel |  |  |
+| QuoteLevel | quote_level | *Used in async mode* |
 | QuoteUsd | xtz_usd | XTZ/USD price |
 
 #### BakerCycles
@@ -312,7 +312,7 @@ Comment: *used to delegate funds to a delegate (an implicit account registered a
 
 #### DelegatorCycles
 
-View name: **snapshots**
+View name: **balance_snapshots**
 
 Comment: 
 
@@ -575,19 +575,17 @@ Comment: *operation, in which rewards were lost due to unrevealed seed nonces by
 
 #### SnapshotBalances
 
-View name: **balance_snapshots**
-
-Comment: 
+Not used
 
 | Select/Join | As | Comment |
 | ---- | ---- | ----------- |
-| Id |             |         |
-| Level | level |  |
-| Balance | balance |  |
-| AccountId | account_id |  |
-| Accounts.Address JOIN ON Accounts.Id = AccountId | account | |
-| DelegateId | delegate_id |  |
-| Accounts.Address JOIN ON Accounts.Id = DelegateId | delegate | |
+| Id |      |         |
+| Level |  |  |
+| Balance |  |  |
+| AccountId |  |  |
+| Accounts.Address JOIN ON Accounts.Id = AccountId |  | |
+| DelegateId |  |  |
+| Accounts.Address JOIN ON Accounts.Id = DelegateId |  | |
 
 #### TransactionOps
 
@@ -627,6 +625,8 @@ Comment:
 
 #### VotingEpoches
 
+Not used
+
 | Select/Join | As | Comment |
 | ---- | ---- | ----------- |
 | Id |      |         |
@@ -635,7 +635,7 @@ Comment:
 
 #### VotingPeriods
 
-View name: **voting_periods**
+View name: **voting_periods** (TODO)
 
 Comment: 
 
