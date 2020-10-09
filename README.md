@@ -2,6 +2,13 @@
 
 ## Setup
 
+#### Create `.env` file
+
+```
+TZKT_PASSWORD=
+POSTGREST_PASSWORD=
+```
+
 #### Download latest TzKT snapshot
 
 ```bash
@@ -27,14 +34,8 @@ make db-pro
 make pro-start
 ```
 
-#### list endpoints (using HTTPie & JQ)
+#### Run Redoc
 
 ```bash
-http :3000 | jq -c '.paths | keys' | jq
-```
-
-#### Update OpenAPI spec
-
-```bash
-make spec
+docker run -p 8080:80 -e SPEC_URL=http://127.0.0.1:3000/ redocly/redoc
 ```
