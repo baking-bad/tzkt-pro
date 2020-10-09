@@ -1,24 +1,30 @@
-.PHONY: docs
+include .env
+export $(shell sed 's/=.*//' .env)
 
-install:
-	yarn
-	pip install nbconvert
-	sudo apt install rename -y
+snapshot:
+	docker run --name tzkt-snapshot bakingbad/tzkt-snapshot:latest
+	docker cp tzkt-snapshot:/tzkt_db.backup .
+	docker rm tzkt-snapshot
+	docker rmi bakingbad/tzkt-snapshot
 
-postprocess:
-	cd $$MDIR && rename 's/^([0-9]+).*/$$1.md/' *.md
-	cd $$MDIR && sed -i 's/&quot;/"/g' *.md
-	cd $$MDIR && sed -r -i 's/^>\sNote:\s(.*)$$/::: warning NOTE\n\1\n:::/g' *.md
-	cd $$MDIR && sed -r -i 's/^>\sTip:\s(.*)$$/::: tip\n\1\n:::/g' *.md
+db-start:
+	docker-compose up -d db
 
-docs:
-	rm docs/tutorials/*.md || true
-	jupyter nbconvert notebooks/*.ipynb --TemplateExporter.template_file=jupyter.tpl --Exporter.preprocessors='["preprocess.AddBinderComponent"]' --to markdown --output-dir docs/tutorials
-	MDIR=docs/tutorials $(MAKE) postprocess
+db-restore:
+	docker-compose exec -T db psql -U tzkt postgres -c '\l'
+	docker-compose exec -T db dropdb -U tzkt --if-exists tzkt_db
+	docker-compose exec -T db createdb -U tzkt -T template0 tzkt_db
+	docker-compose exec -T db pg_restore -U tzkt -O -x -v -d tzkt_db -1 < tzkt_db.backup
 
-build:
-	yarn build
-	echo "pro.tzkt.io" > ./docs/.vuepress/dist/CNAME
+db-pro:
+	docker-compose exec -T db psql -U tzkt postgres -c "CREATE USER postgrest WITH PASSWORD '$$POSTGREST_PASSWORD';"
+	docker-compose exec -T db psql -U tzkt -d tzkt_db < init.sql
 
-dev:
-	yarn dev
+pro-start:
+	docker-compose up -d
+
+pro-stop:
+	docker-compose down
+
+spec:
+	curl 127.0.0.1:3000 > openapi.json

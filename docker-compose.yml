@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  postgrest:
+    container_name: postgrest
+    restart: always
+    image: postgrest/postgrest
+    links:
+      - db:db
+    environment:
+      PGRST_DB_URI: postgres://postgrest:${POSTGREST_PASSWORD}@db:5432/tzkt_db
+      PGRST_DB_SCHEMA: api
+      PGRST_DB_ANON_ROLE: api_anon
+    depends_on:
+      - db
+    ports:
+    - "3000:3000"
+
+  db:
+    container_name: tzkt-pro-db
+    restart: always
+    image: postgres:12
+    environment:
+      POSTGRES_USER: tzkt
+      POSTGRES_PASSWORD: ${TZKT_PASSWORD}
+      POSTGRES_DB: tzkt_db
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 127.0.0.1:5432:5432
+
+  sync:
+    container_name: tzkt-pro-sync
+    restart: always
+    image: bakingbad/tzkt-sync:latest
+    environment:
+      - TZKT_ConnectionStrings__DefaultConnection=server=db;port=5432;database=tzkt_db;username=tzkt;password=${TZKT_PASSWORD};
+    depends_on:
+      - db
+
+volumes:
+  postgres:
