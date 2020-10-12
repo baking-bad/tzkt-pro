@@ -5,7 +5,7 @@
 -- tzkt
 
 CREATE ROLE indexer NOINHERIT;
-GRANT indxer to tzkt;
+GRANT indexer to tzkt;
 
 -- postgrest
 
