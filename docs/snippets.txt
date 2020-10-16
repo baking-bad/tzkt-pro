@@ -1,0 +1,42 @@
+import { PostgrestClient } from '@supabase/postgrest-js'
+
+let client = new PostgrestClient('https://pro.tzkt.io/v1')
+let { body: contracts } = await client
+  .auth('baking_bad')
+  .from('contracts')
+  .eq("is_staked", true)
+  .select("address, creator")
+  .order("last_level", sortAscending=false)
+
+
+from postgrest_py import PostgrestClient
+
+async with PostgrestClient("https://pro.tzkt.io/v1") as client:
+  transactions = await client \
+    .auth("baking_bad") \
+    .from_("transactions") \
+    .select("*") \
+    .execute() \
+    .json()
+
+
+use postgrest::Postgrest;
+
+let client = Postgrest::new("https://pro.tzkt.io/v1");
+let resp = client
+  .auth("baking_bad")
+  .from("blocks")
+  .select("level")
+  .execute()
+  .await?;
+
+
+import 'package:postgrest/postgrest.dart';
+
+var client = PostgrestClient('https://pro.tzkt.io/v1');
+var response = await client
+    .auth('baking_bad')
+    .from('rewards')
+    .select('baker, total_rewards')
+    .eq('cycle', 200)
+    .end();

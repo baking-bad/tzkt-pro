@@ -58,4 +58,12 @@ function merge_additional_data() {
 	jq -r --argfile data $1 '. * $data'
 }
 
+# ------------------------------------------------------
+# specify description
+# ------------------------------------------------------
+
+function set_description() {
+	jq -r --arg data "$(cat $1)" '.info.description = $data'
+}
+
 "$@"

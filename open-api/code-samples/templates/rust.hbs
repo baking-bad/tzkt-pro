@@ -1,0 +1,9 @@
+use postgrest::Postgrest;
+
+let client = Postgrest::new("{{client_url}}");
+let resp = client
+    .auth("{{auth}}")
+    .from("{{table_name}}")
+    .select("*")
+    .execute()
+    .await?;

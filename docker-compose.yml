@@ -14,7 +14,7 @@ services:
     depends_on:
       - db
     ports:
-      - "${POSTGREST_PORT:-3000}:3000"
+      - "127.0.0.1:${POSTGREST_PORT:-3000}:3000"
 
   db:
     container_name: tzkt-pro-db
@@ -29,7 +29,7 @@ services:
     expose:
       - 5432
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
 
   sync:
     container_name: tzkt-pro-sync
@@ -39,6 +39,19 @@ services:
       - TZKT_ConnectionStrings__DefaultConnection=server=db;port=5432;database=tzkt_db;username=tzkt;password=${TZKT_PASSWORD};
     depends_on:
       - db
+
+  nginx:
+    container_name: tzkt-pro-nginx
+    restart: always
+    image: nginx:latest
+    depends_on:
+      - postgrest
+    ports:
+      - 127.0.0.1:8000:80
+    volumes:
+      - ./docs/build:/usr/share/nginx/html/
+      - ./docs/config/default.conf:/etc/nginx/conf.d/default.conf
+
 
 volumes:
   postgres:

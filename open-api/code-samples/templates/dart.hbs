@@ -1,0 +1,8 @@
+import 'package:postgrest/postgrest.dart';
+
+var client = PostgrestClient('{{client_url}}');
+var response = await client
+    .auth('{{auth}}')
+    .from('{{table_name}}')
+    .select('*')
+    .end();

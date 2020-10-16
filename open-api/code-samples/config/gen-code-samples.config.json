@@ -1,4 +1,6 @@
 {
   "JavaScript": "open-api/code-samples/templates/javascript.hbs",
-  "Python": "open-api/code-samples/templates/python.hbs"
+  "Python": "open-api/code-samples/templates/python.hbs",
+  "Rust": "open-api/code-samples/templates/rust.hbs",
+  "Dart": "open-api/code-samples/templates/dart.hbs"
 }

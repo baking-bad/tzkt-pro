@@ -16,6 +16,7 @@ OPEN_API_SPEC = openapi.json
 # data
 TAG_GROUPS = open-api/data/open-api-tag-groups.json
 ADDITIONAL_DATA = open-api/data/open-api-additional-data.json
+DESCRIPTION = open-api/data/open-api-description.md
 
 snapshot:
 	docker run --name tzkt-snapshot bakingbad/tzkt-snapshot:latest
@@ -64,7 +65,8 @@ spec:
 		| $(OPEN_API_CMD) merge_code_examples openapi-code-samples.json \
 		| $(OPEN_API_CMD) assoc_tag_groups $(TAG_GROUPS) \
 		| $(OPEN_API_CMD) merge_additional_data $(ADDITIONAL_DATA) \
-		> openapi.json
+		| $(OPEN_API_CMD) set_description $(DESCRIPTION) \
+		> docs/config/openapi.json
 
 	# cleanup temp files
 	@rm openapi.json.tmp
@@ -73,7 +75,7 @@ spec:
 # Serve Open API specs locally on port 8080 using Redoc
 .PHONY: docs
 docs:
-	docker run -p $(REDOC_PORT):80 \
-      -v $$(pwd)/$(OPEN_API_SPEC):/usr/share/nginx/html/$(OPEN_API_SPEC) \
-      -e SPEC_URL=$(OPEN_API_SPEC) \
-      redocly/redoc
+	rm -rf docs/build || true
+	mkdir docs/build
+	./node_modules/.bin/redoc-cli bundle docs/config/openapi.json --output docs/build/docs.html
+	cp -r docs/static/* docs/build/

@@ -3,7 +3,11 @@ from postgrest_py import PostgrestClient
 
 async def main():
   async with PostgrestClient("{{client_url}}") as client:
-    r = await client.from_("{{table_name}}").select("*").execute()
+    r = await client \
+      .auth("{{auth}}") \
+      .from_("{{table_name}}") \
+      .select("*") \
+      .execute()
     {{table_name}} = r.json()
 
 asyncio.run(main())

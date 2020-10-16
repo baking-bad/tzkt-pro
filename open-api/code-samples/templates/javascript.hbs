@@ -1,4 +1,4 @@
-import { PostgrestClient } from ' @supabase/postgrest-js'
+import { PostgrestClient } from '@supabase/postgrest-js'
 
 let client = new PostgrestClient('{{client_url}}')
 let { body: {{table_name}} } = await client
