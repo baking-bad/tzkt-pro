@@ -14,14 +14,6 @@ function load_envs() {
   set +o allexport
 }
 
-function run_jq() {
-  if ! $(which jq &> /dev/null); then
-     docker run --rm -i imega/jq "$@"
-  else
-    jq "$@"
-  fi
-}
-
 # ------------------------------------------------------
 # generate code samples from Open API spec file
 # ------------------------------------------------------
@@ -39,7 +31,7 @@ function gen_code_samples() {
 
 function merge_code_examples() {
   local code_samples=$1
-	run_jq -r --argfile source $code_samples -f open-api/jq/open-api-merge-code-examples.jq
+	jq -r --argfile source $code_samples -f open-api/jq/open-api-merge-code-examples.jq
 }
 
 # ------------------------------------------------------
@@ -47,7 +39,7 @@ function merge_code_examples() {
 # ------------------------------------------------------
 
 function cleanup() {
-	run_jq -r -f open-api/jq/open-api-cleanup.jq
+	jq -r -f open-api/jq/open-api-cleanup.jq
 }
 
 # ------------------------------------------------------
@@ -55,7 +47,7 @@ function cleanup() {
 # ------------------------------------------------------
 
 function assoc_tag_groups() {
-	run_jq -r --argfile data $1 '."x-tagGroups" = $data'
+	jq -r --argfile data $1 '."x-tagGroups" = $data'
 }
 
 # ------------------------------------------------------
@@ -63,7 +55,7 @@ function assoc_tag_groups() {
 # ------------------------------------------------------
 
 function merge_additional_data() {
-	run_jq -r --argfile data $1 '. * $data'
+	jq -r --argfile data $1 '. * $data'
 }
 
 "$@"
