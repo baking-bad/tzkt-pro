@@ -27,6 +27,9 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT USAGE ON SCHEMA public TO indexer;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO indexer;
 
+GRANT USAGE ON SCHEMA public TO api_views_owner;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO api_views_owner;
+
 -- api (postgrest)
 
 DROP SCHEMA IF EXISTS api CASCADE;

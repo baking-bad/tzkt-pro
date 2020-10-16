@@ -26,6 +26,7 @@ snapshot:
 
 db-start:
 	docker-compose up -d db
+	docker logs tzkt-pro-db -f
 
 db-restore:
 	docker-compose exec -T db psql -U tzkt postgres -c '\l'
