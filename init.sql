@@ -4,11 +4,14 @@
 
 -- tzkt
 
+DROP ROLE IF EXISTS indexer;
 CREATE ROLE indexer NOINHERIT;
 GRANT indexer to tzkt;
 
 -- postgrest
 
+DROP ROLE IF EXISTS api_views_owner;
+DROP ROLE IF EXISTS api_anon;
 CREATE ROLE api_views_owner NOINHERIT;
 CREATE ROLE api_anon NOINHERIT;
 GRANT api_views_owner to tzkt;
@@ -76,7 +79,8 @@ WHERE "accounts"."Type" = 1;
 
 -- add view comments
 
-COMMENT ON view "api"."users" IS 'Implicit accounts (tz) that are not registered as delegates.';
+COMMENT ON view "api"."users" IS 'User
+Implicit accounts (tz) that are not registered as delegates.';
 
 COMMENT ON column "api"."users"."address" IS 'Public key hash of the account';
 COMMENT ON column "api"."users"."first_level" IS 'Block height of the first operation related to the account';
@@ -142,7 +146,8 @@ WHERE "accounts"."Type" = 2;
 
 -- add view comments
 
-COMMENT ON view "api"."delegates" IS 'Implicit accounts (tz) that are registered as delegates';
+COMMENT ON view "api"."delegates" IS 'Delegate
+Implicit accounts (tz) that are registered as delegates';
 
 COMMENT ON column "api"."delegates"."address" IS 'Public key hash of the account';
 COMMENT ON column "api"."delegates"."first_level" IS 'Block height of the first operation related to the account';
@@ -218,7 +223,8 @@ SELECT
 
 -- add view comments
 
-COMMENT ON view "api"."contracts" IS 'Originated accounts (KT) that have code';
+COMMENT ON view "api"."contracts" IS 'Contract
+Originated accounts (KT) that have code';
 
 COMMENT ON column "api"."contracts"."address" IS 'Public key hash of the account';
 COMMENT ON column "api"."contracts"."first_level" IS 'Block height of the first operation related to the account';
@@ -270,7 +276,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."activations" IS 'Used to activate accounts that were recommended allocations of tezos tokens for donations to the Tezos Foundation’s fundraiser';
+COMMENT ON view "api"."activations" IS 'Activation
+Used to activate accounts that were recommended allocations of tezos tokens for donations to the Tezos Foundation’s fundraiser';
 
 COMMENT ON column "api"."activations"."level" IS 'The height of the block, from the genesis block, in which the operation was included';
 COMMENT ON column "api"."activations"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -325,7 +332,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."summary" IS '';
+COMMENT ON view "api"."summary" IS 'Summary
+';
 
 COMMENT ON column "api"."summary"."level" IS 'The height of the block';
 COMMENT ON column "api"."summary"."timestamp" IS 'Datetime of the block (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -430,7 +438,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."rewards" IS 'Baker rewards/penalties per cycle with breakdown by reward/penalty kind';
+COMMENT ON view "api"."rewards" IS 'Reward
+Baker rewards/penalties per cycle with breakdown by reward/penalty kind';
 
 COMMENT ON column "api"."rewards"."cycle" IS 'Cycle in which rewards have been or will be earned.';
 COMMENT ON column "api"."rewards"."baker" IS 'Baker address';
@@ -525,7 +534,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."rights" IS '';
+COMMENT ON view "api"."rights" IS 'Right
+';
 
 COMMENT ON column "api"."rights"."cycle" IS 'Cycle on which the right can be realized.';
 COMMENT ON column "api"."rights"."level" IS 'Level at which a block must be baked or an endorsement must be sent.';
@@ -570,7 +580,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."ballots" IS 'Used to vote for a proposal in a given voting cycle';
+COMMENT ON view "api"."ballots" IS 'Ballot
+Used to vote for a proposal in a given voting cycle';
 
 COMMENT ON column "api"."ballots"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."ballots"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -635,7 +646,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."blocks" IS '';
+COMMENT ON view "api"."blocks" IS 'Block
+';
 
 COMMENT ON column "api"."blocks"."level" IS 'The height of the block from the genesis block';
 COMMENT ON column "api"."blocks"."hash" IS 'Block hash';
@@ -699,7 +711,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."cycles" IS '';
+COMMENT ON view "api"."cycles" IS 'Cycle
+';
 
 COMMENT ON column "api"."cycles"."index" is 'Cycle index starting from zero';
 COMMENT ON column "api"."cycles"."snapshot_index" is 'Relative index of the snapshot';
@@ -760,7 +773,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."delegations" IS 'Used to delegate funds to a delegate (an implicit account registered as a baker)';
+COMMENT ON view "api"."delegations" IS 'Delegation
+Used to delegate funds to a delegate (an implicit account registered as a baker)';
 
 COMMENT ON column "api"."delegations"."level" is 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."delegations"."timestamp" is 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -806,7 +820,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."balance_snapshots" IS '';
+COMMENT ON view "api"."balance_snapshots" IS 'Balance Snapshot
+';
 
 -- set view owner
 
@@ -843,7 +858,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."double_bakings" IS '';
+COMMENT ON view "api"."double_bakings" IS 'Double Baking
+';
 
 COMMENT ON column "api"."double_bakings"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."double_bakings"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -891,7 +907,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."double_endorsings" IS '';
+COMMENT ON view "api"."double_endorsings" IS 'Double Endorsing
+';
 
 COMMENT ON column "api"."double_endorsings"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."double_endorsings"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -933,7 +950,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."endorsements" IS '';
+COMMENT ON view "api"."endorsements" IS 'Endorsement
+';
 
 COMMENT ON column "api"."endorsements"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."endorsements"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -976,7 +994,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."migrations" IS 'A result of the context (database) migration during a protocol update (synthetic type)';
+COMMENT ON view "api"."migrations" IS 'Migration
+A result of the context (database) migration during a protocol update (synthetic type)';
 
 COMMENT ON column "api"."migrations"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."migrations"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -1015,7 +1034,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."nonce_revelations" IS '';
+COMMENT ON view "api"."nonce_revelations" IS 'Nonce Revelations
+';
 
 COMMENT ON column "api"."nonce_revelations"."level" IS 'The height of the block from the genesis block, in which the operation was included.';
 COMMENT ON column "api"."nonce_revelations"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -1078,7 +1098,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."originations" IS '';
+COMMENT ON view "api"."originations" IS 'Origination
+';
 
 COMMENT ON column "api"."originations"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."originations"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -1135,7 +1156,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."proposals" IS '';
+COMMENT ON view "api"."proposals" IS 'Proposal
+';
 
 COMMENT ON column "api"."proposals"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."proposals"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -1184,7 +1206,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."protocol_proposals" IS 'Proposals';
+COMMENT ON view "api"."protocol_proposals" IS 'Protocol Proposal
+Proposals';
 COMMENT ON column "api"."protocol_proposals"."hash" IS 'Hash of the proposal, which representing a tarball of concatenated .ml/.mli source files';
 COMMENT ON column "api"."protocol_proposals"."status" IS 'Status of the proposal active - the proposal in the active state accepted - accepted for protocol upgrade proposal skipped - the proposal didn''t pass the Proposal Period rejected - the proposal didn''t reach a quorum during the Exploration or Promotion Period';
 COMMENT ON column "api"."protocol_proposals"."baker" IS 'Address of the baker (delegate) submitted the proposal';
@@ -1235,7 +1258,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."protocols" IS '';
+COMMENT ON view "api"."protocols" IS 'Protocol
+';
 
 COMMENT ON column "api"."protocols"."code" IS 'Protocol code, representing a number of protocol changes since genesis (mod 256, but -1 for the genesis block)';
 COMMENT ON column "api"."protocols"."first_level" IS 'Block height where the protocol was applied';
@@ -1280,7 +1304,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."reveals" IS '';
+COMMENT ON view "api"."reveals" IS 'Reveal
+';
 
 COMMENT ON column "api"."reveals"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."reveals"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -1322,7 +1347,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."revelation_penalties" IS 'Operation, in which rewards were lost due to unrevealed seed nonces by the delegate (synthetic type)';
+COMMENT ON view "api"."revelation_penalties" IS 'Revelation Penalties
+Operation, in which rewards were lost due to unrevealed seed nonces by the delegate (synthetic type)';
 
 COMMENT ON column "api"."revelation_penalties"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."revelation_penalties"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -1386,7 +1412,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."transactions" IS '';
+COMMENT ON view "api"."transactions" IS 'Transaction
+';
 
 COMMENT ON column "api"."transactions"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."transactions"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
@@ -1440,7 +1467,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."voting_periods" IS '';
+COMMENT ON view "api"."voting_periods" IS 'Voting Period
+';
 
 -- set view owner
 
@@ -1471,7 +1499,8 @@ FROM
 
 -- add view comments
 
-COMMENT ON view "api"."voting_snapshots" IS '';
+COMMENT ON view "api"."voting_snapshots" IS 'Voting Snapshot
+';
 
 -- set view owner
 

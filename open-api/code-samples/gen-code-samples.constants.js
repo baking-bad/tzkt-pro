@@ -1,0 +1,5 @@
+module.exports.ERROR_INVALID_OPEN_API_SPEC = 'code-samples.cli Error: Invalid Open API Spec provided ``node code-samples.cli.js gen <spec filepath> <config filepath> <output filepath>``'
+module.exports.ERROR_INVALID_CONFIG_FILEPATH = 'code-samples.cli Error: Invalid config filepath provided ``node code-samples.cli.js gen <spec filepath> <config filepath> <output filepath>``'
+module.exports.ERROR_INVALID_CONFIG = 'code-samples.cli Error: Invalid config provided ``node code-samples.cli.js gen <spec filepath> <config filepath> <output filepath>``'
+module.exports.ERROR_INVALID_TEMPLATE_FILEPATH = 'code-samples.cli Error: Invalid template filepath provided in config ``node code-samples.cli.js gen <spec filepath> <config filepath> <output filepath>``'
+module.exports.ERROR_INVALID_TEMPLATE = 'code-samples.cli Error: Invalid template provided in config ``node code-samples.cli.js gen <spec filepath> <config filepath> <output filepath>``'

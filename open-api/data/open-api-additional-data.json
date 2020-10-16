@@ -1,0 +1,21 @@
+{
+  "info": {
+    "title": "TzKT API",
+    "description": "TzKT Explorer provides a free API for accessing detailed Tezos blockchain data and to help developers build more services and applications on top of Tezos.\nTzKT API is an open-source project, so you can clone and build it and use as a self-hosted service to avoid any risks of using third-party services.\n\nFeel free to contact us if you have any questions or if need any specific features or endpoints or query parameters, etc.\nAny feedback really helps us make TzKT better.\nAnd don't forget to star TzKT [on GitHub](https://github.com/baking-bad/tzkt) :)\n\n### Terms of Use\n\nTzKT API is free for everyone and for both commercial and non-commercial usage.\n\nIf your application or service uses the TzKT API in any forms: directly on frontend or indirectly on backend, you should mention that fact on your website or application\nby placing the label **\"Powered by TzKT API\"** with a direct link to [tzkt.io](https://tzkt.io).\n\n### Supported Tezos Networks\n\nTzKT API is available for the following Tezos networks and on the following base URLs:\n\n- Mainnet: `https://api.tzkt.io/` ([view docs](https://api.tzkt.io))\n- Babylonnet: `https://api.babylon.tzkt.io/` ([view docs](https://api.babylon.tzkt.io))\n- Carthagenet: `https://api.carthage.tzkt.io/` ([view docs](https://api.carthage.tzkt.io))\n- Zeronet: `https://api.zeronet.tzkt.io/` ([view docs](https://api.zeronet.tzkt.io))\n- Delphinet: `https://api.delphi.tzkt.io/` ([view docs](https://api.delphi.tzkt.io))\n\n### Staging environment\n\nWe also provide a staging environment with the newest features and updates before deploying to production.\nThis allows to test latest features and pre-update client applications in case of breaking changes\nso API may be used without the adverse consequences of operating in a production environment.\n\nStaging API: `https://staging.api.tzkt.io/` ([view docs](https://staging.api.tzkt.io))\n\n### Rate Limits\n\nThere will be no strict rate limits as long as our servers can handle the load without additional infrastructure costs.\nHowever, any apparent abuse will be prevented by setting targeted rate limits.\n\n### Contacts Us\n\nFeel free to ask any questions about TzKT Explorer and Tezos in general. Our team is always happy to help!\n\n- Email: hello@baking-bad.org\n- Twitter: https://twitter.com/TezosBakingBad\n- Telegram: [tg://resolve?domain=baking_bad_chat](tg://resolve?domain=baking_bad_chat)\n- Slack: https://tezos-dev.slack.com/archives/CV5NX7F2L\n",
+    "contact": {
+      "name": "Baking Bad Team",
+      "url": "https://baking-bad.org/docs",
+      "email": "hello@baking-bad.org"
+    },
+    "version": "v1.2",
+    "x-logo": {
+    "url": "https://tzkt.io/logo.png",
+    "href": "https://tzkt.io/"
+    }
+  },
+  "servers": [
+    {
+    "url": "https://api.tzkt.io"
+    }
+  ]
+}
