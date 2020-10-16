@@ -14,7 +14,7 @@ services:
     depends_on:
       - db
     ports:
-    - "3000:3000"
+      - "${POSTGREST_PORT:-3000}:3000"
 
   db:
     container_name: tzkt-pro-db
@@ -29,7 +29,7 @@ services:
     expose:
       - 5432
     ports:
-      - 127.0.0.1:5432:5432
+      - "${POSTGRES_PORT:-5432}:5432"
 
   sync:
     container_name: tzkt-pro-sync

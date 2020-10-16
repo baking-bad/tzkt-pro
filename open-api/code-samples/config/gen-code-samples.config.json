@@ -1,0 +1,4 @@
+{
+  "JavaScript": "open-api/code-samples/templates/javascript.hbs",
+  "Python": "open-api/code-samples/templates/python.hbs"
+}

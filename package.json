@@ -1,0 +1,29 @@
+{
+  "name": "tzkt-pro",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baking-bad/tzkt-pro.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/baking-bad/tzkt-pro/issues"
+  },
+  "homepage": "https://github.com/baking-bad/tzkt-pro#readme",
+  "scripts": {
+    "test": "jest --ci --config jest.node.config.js --verbose",
+    "test:watch": "npm run test -- --watch"
+  },
+  "engines": {
+    "npm": "^6.14.8"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bluebird": "^3.7.2",
+    "dotenv-cli": "^4.0.0",
+    "handlebars": "^4.7.6",
+    "jest": "^26.5.3",
+    "shelljs": "^0.8.4"
+  }
+}
