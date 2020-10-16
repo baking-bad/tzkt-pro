@@ -31,7 +31,7 @@ NPM Version
 Additionally NPM version is specified in each package.json throughout the project eg.
 ```json
   "engines": {
-    "npm": "=6.14.4"
+    "npm": "^6.14.8"
   },
 ```
 Make sure the NPM version specified in engines (as above) 

@@ -16,7 +16,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "engines": {
-    "npm": "^6.9.0"
+    "npm": "^6.14.8"
   },
   "dependencies": {},
   "devDependencies": {
