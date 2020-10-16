@@ -4,6 +4,13 @@
 
 #### Create `.env` file from ``.env.tpl``
 
+#### Install dependencies
+
+```bash
+sudo apt install jq  # or brew install jq
+npm i
+```
+
 #### Download latest TzKT snapshot
 
 ```bash

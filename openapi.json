@@ -34,8 +34,7 @@
         "tags": [
           "activations"
         ],
-        "summary": "Activation",
-        "description": "Used to activate accounts that were recommended allocations of tezos tokens for donations to the Tezos Foundation’s fundraiser",
+        "summary": "Used to activate accounts that were recommended allocations of tezos tokens for donations to the Tezos Foundation’s fundraiser",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.activations.level"
@@ -105,7 +104,6 @@
         "tags": [
           "balance_snapshots"
         ],
-        "summary": "Balance Snapshot",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.balance_snapshots.cycle"
@@ -172,8 +170,7 @@
         "tags": [
           "ballots"
         ],
-        "summary": "Ballot",
-        "description": "Used to vote for a proposal in a given voting cycle",
+        "summary": "Used to vote for a proposal in a given voting cycle",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.ballots.level"
@@ -252,7 +249,6 @@
         "tags": [
           "blocks"
         ],
-        "summary": "Block",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.blocks.level"
@@ -397,8 +393,7 @@
         "tags": [
           "contracts"
         ],
-        "summary": "Contract",
-        "description": "Originated accounts (KT) that have code",
+        "summary": "Originated accounts (KT) that have code",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.contracts.address"
@@ -504,7 +499,6 @@
         "tags": [
           "cycles"
         ],
-        "summary": "Cycle",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.cycles.index"
@@ -586,8 +580,7 @@
         "tags": [
           "delegates"
         ],
-        "summary": "Delegate",
-        "description": "Implicit accounts (tz) that are registered as delegates",
+        "summary": "Implicit accounts (tz) that are registered as delegates",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.delegates.address"
@@ -729,8 +722,7 @@
         "tags": [
           "delegations"
         ],
-        "summary": "Delegation",
-        "description": "Used to delegate funds to a delegate (an implicit account registered as a baker)",
+        "summary": "Used to delegate funds to a delegate (an implicit account registered as a baker)",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.delegations.level"
@@ -827,7 +819,6 @@
         "tags": [
           "double_bakings"
         ],
-        "summary": "Double Baking",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.double_bakings.level"
@@ -912,7 +903,6 @@
         "tags": [
           "double_endorsings"
         ],
-        "summary": "Double Endorsing",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.double_endorsings.level"
@@ -997,7 +987,6 @@
         "tags": [
           "endorsements"
         ],
-        "summary": "Endorsement",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.endorsements.level"
@@ -1070,8 +1059,7 @@
         "tags": [
           "migrations"
         ],
-        "summary": "Migration",
-        "description": "A result of the context (database) migration during a protocol update (synthetic type)",
+        "summary": "A result of the context (database) migration during a protocol update (synthetic type)",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.migrations.level"
@@ -1141,7 +1129,6 @@
         "tags": [
           "nonce_revelations"
         ],
-        "summary": "Nonce Revelations",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.nonce_revelations.level"
@@ -1214,7 +1201,6 @@
         "tags": [
           "originations"
         ],
-        "summary": "Origination",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.originations.level"
@@ -1326,7 +1312,6 @@
         "tags": [
           "proposals"
         ],
-        "summary": "Proposal",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.proposals.level"
@@ -1405,8 +1390,7 @@
         "tags": [
           "protocol_proposals"
         ],
-        "summary": "Protocol Proposal",
-        "description": "Proposals",
+        "summary": "Proposals",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.protocol_proposals.id"
@@ -1476,7 +1460,6 @@
         "tags": [
           "protocols"
         ],
-        "summary": "Protocol",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.protocols.code"
@@ -1603,7 +1586,6 @@
         "tags": [
           "reveals"
         ],
-        "summary": "Reveal",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.reveals.level"
@@ -1688,8 +1670,7 @@
         "tags": [
           "revelation_penalties"
         ],
-        "summary": "Revelation Penalties",
-        "description": "Operation, in which rewards were lost due to unrevealed seed nonces by the delegate (synthetic type)",
+        "summary": "Operation, in which rewards were lost due to unrevealed seed nonces by the delegate (synthetic type)",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.revelation_penalties.level"
@@ -1762,8 +1743,7 @@
         "tags": [
           "rewards"
         ],
-        "summary": "Reward",
-        "description": "Baker rewards/penalties per cycle with breakdown by reward/penalty kind",
+        "summary": "Baker rewards/penalties per cycle with breakdown by reward/penalty kind",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.rewards.cycle"
@@ -1977,7 +1957,6 @@
         "tags": [
           "rights"
         ],
-        "summary": "Right",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.rights.cycle"
@@ -2053,7 +2032,6 @@
         "tags": [
           "summary"
         ],
-        "summary": "Summary",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.summary.level"
@@ -2186,7 +2164,6 @@
         "tags": [
           "transactions"
         ],
-        "summary": "Transaction",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.transactions.level"
@@ -2307,8 +2284,7 @@
         "tags": [
           "users"
         ],
-        "summary": "User",
-        "description": "Implicit accounts (tz) that are not registered as delegates.",
+        "summary": "Implicit accounts (tz) that are not registered as delegates.",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.users.address"
@@ -2408,7 +2384,6 @@
         "tags": [
           "voting_periods"
         ],
-        "summary": "Voting Period",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.voting_periods.code"
@@ -2484,7 +2459,6 @@
         "tags": [
           "voting_snapshots"
         ],
-        "summary": "Voting Snapshot",
         "parameters": [
           {
             "$ref": "#/parameters/rowFilter.voting_snapshots.level"
@@ -2549,7 +2523,7 @@
   },
   "definitions": {
     "activations": {
-      "description": "Activation\nUsed to activate accounts that were recommended allocations of tezos tokens for donations to the Tezos Foundation’s fundraiser",
+      "description": "Used to activate accounts that were recommended allocations of tezos tokens for donations to the Tezos Foundation’s fundraiser",
       "properties": {
         "level": {
           "format": "integer",
@@ -2582,7 +2556,6 @@
       "type": "object"
     },
     "balance_snapshots": {
-      "description": "Balance Snapshot\n",
       "properties": {
         "cycle": {
           "format": "integer",
@@ -2606,7 +2579,7 @@
       "type": "object"
     },
     "ballots": {
-      "description": "Ballot\nUsed to vote for a proposal in a given voting cycle",
+      "description": "Used to vote for a proposal in a given voting cycle",
       "properties": {
         "level": {
           "format": "integer",
@@ -2655,7 +2628,6 @@
       "type": "object"
     },
     "blocks": {
-      "description": "Block\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -2813,7 +2785,7 @@
       "type": "object"
     },
     "contracts": {
-      "description": "Contract\nOriginated accounts (KT) that have code",
+      "description": "Originated accounts (KT) that have code",
       "properties": {
         "address": {
           "maxLength": 36,
@@ -2908,7 +2880,6 @@
       "type": "object"
     },
     "cycles": {
-      "description": "Cycle\n",
       "properties": {
         "index": {
           "format": "integer",
@@ -2960,7 +2931,7 @@
       "type": "object"
     },
     "delegates": {
-      "description": "Delegate\nImplicit accounts (tz) that are registered as delegates",
+      "description": "Implicit accounts (tz) that are registered as delegates",
       "properties": {
         "address": {
           "maxLength": 36,
@@ -3112,7 +3083,7 @@
       "type": "object"
     },
     "delegations": {
-      "description": "Delegation\nUsed to delegate funds to a delegate (an implicit account registered as a baker)",
+      "description": "Used to delegate funds to a delegate (an implicit account registered as a baker)",
       "properties": {
         "level": {
           "format": "integer",
@@ -3193,7 +3164,6 @@
       "type": "object"
     },
     "double_bakings": {
-      "description": "Double Baking\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -3252,7 +3222,6 @@
       "type": "object"
     },
     "double_endorsings": {
-      "description": "Double Endorsing\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -3311,7 +3280,6 @@
       "type": "object"
     },
     "endorsements": {
-      "description": "Endorsement\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -3349,7 +3317,7 @@
       "type": "object"
     },
     "migrations": {
-      "description": "Migration\nA result of the context (database) migration during a protocol update (synthetic type)",
+      "description": "A result of the context (database) migration during a protocol update (synthetic type)",
       "properties": {
         "level": {
           "format": "integer",
@@ -3381,7 +3349,6 @@
       "type": "object"
     },
     "nonce_revelations": {
-      "description": "Nonce Revelations\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -3420,7 +3387,6 @@
       "type": "object"
     },
     "originations": {
-      "description": "Origination\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -3526,7 +3492,6 @@
       "type": "object"
     },
     "proposals": {
-      "description": "Proposal\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -3575,7 +3540,7 @@
       "type": "object"
     },
     "protocol_proposals": {
-      "description": "Protocol Proposal\nProposals",
+      "description": "Proposals",
       "properties": {
         "id": {
           "format": "integer",
@@ -3608,7 +3573,6 @@
       "type": "object"
     },
     "protocols": {
-      "description": "Protocol\n",
       "properties": {
         "code": {
           "format": "integer",
@@ -3714,7 +3678,6 @@
       "type": "object"
     },
     "reveals": {
-      "description": "Reveal\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -3772,7 +3735,7 @@
       "type": "object"
     },
     "revelation_penalties": {
-      "description": "Revelation Penalties\nOperation, in which rewards were lost due to unrevealed seed nonces by the delegate (synthetic type)",
+      "description": "Operation, in which rewards were lost due to unrevealed seed nonces by the delegate (synthetic type)",
       "properties": {
         "level": {
           "format": "integer",
@@ -3809,7 +3772,7 @@
       "type": "object"
     },
     "rewards": {
-      "description": "Reward\nBaker rewards/penalties per cycle with breakdown by reward/penalty kind",
+      "description": "Baker rewards/penalties per cycle with breakdown by reward/penalty kind",
       "properties": {
         "cycle": {
           "format": "integer",
@@ -4080,7 +4043,6 @@
       "type": "object"
     },
     "rights": {
-      "description": "Right\n",
       "properties": {
         "cycle": {
           "format": "integer",
@@ -4122,7 +4084,6 @@
       "type": "object"
     },
     "summary": {
-      "description": "Summary\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -4257,7 +4218,6 @@
       "type": "object"
     },
     "transactions": {
-      "description": "Transaction\n",
       "properties": {
         "level": {
           "format": "integer",
@@ -4377,7 +4337,7 @@
       "type": "object"
     },
     "users": {
-      "description": "User\nImplicit accounts (tz) that are not registered as delegates.",
+      "description": "Implicit accounts (tz) that are not registered as delegates.",
       "properties": {
         "address": {
           "maxLength": 36,
@@ -4461,7 +4421,6 @@
       "type": "object"
     },
     "voting_periods": {
-      "description": "Voting Period\n",
       "properties": {
         "code": {
           "format": "integer",
@@ -4495,7 +4454,6 @@
       "type": "object"
     },
     "voting_snapshots": {
-      "description": "Voting Snapshot\n",
       "properties": {
         "level": {
           "format": "integer",
