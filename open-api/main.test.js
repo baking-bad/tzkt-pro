@@ -7,7 +7,7 @@ const tagGroups = require('./data/open-api-tag-groups.json')
 
 describe('make spec', () => {
   it('should generate open api spec as expected', async () => {
-    // given ... Postgrest is running as configured correctly
+    // given ... Postgrest is running and configured correctly
 
     // when ... we generate open api spec
     exec('make spec')
