@@ -80,3 +80,8 @@ docs:
 	mkdir docs/build
 	./node_modules/.bin/redoc-cli bundle docs/config/openapi.json --output docs/build/docs.html
 	cp -r docs/static/* docs/build/
+
+reload:
+	make spec
+	make docs
+	docker restart tzkt-pro-nginx
