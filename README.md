@@ -83,4 +83,4 @@ npm run test:watch
 
 ## Node Version
 
-The Node version for this project is automatically managed by AVN and NVM, read more [here](.backups/docs/node-version.md).
+The Node version for this project is automatically managed by AVN and NVM, read more [here](docs/node-version.md).
