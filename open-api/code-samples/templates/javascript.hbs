@@ -5,3 +5,4 @@ let { body: {{table_name}} } = await client
   .auth('{{auth}}')
   .from('{{table_name}}')
   .select("*")
+  .limit(5)

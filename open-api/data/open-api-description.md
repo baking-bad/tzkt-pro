@@ -1,23 +1,23 @@
-TzKT Pro provides a flexible Pro for accessing detailed Tezos blockchain data and to help developers build more services and applications on top of Tezos.
-TzKT Pro is an open-source project, so you can clone and build it and use as a self-hosted service to avoid any risks of using third-party services.
-
-Feel free to contact us if you have any questions or if need any specific features or endpoints or query parameters, etc.
-Any feedback really helps us make TzKT better.
-And don't forget to star TzKT [on GitHub](https://github.com/baking-bad/tzkt-pro) :)
+TzKT Pro in a nutshell is headless [TzKT indexer](https://github.com/baking-bad/tzkt) + PostgreSQL DB + set of SQL Views + [PostgREST](http://postgrest.org/) API gateway. It is an [open-source](https://github.com/baking-bad/tzkt-pro) project available both for commercial and non-commercial use (with attribution).
 
 ### Terms of Use
 
-TzKT Pro is free for everyone and for both commercial and non-commercial usage.
+If your application or service uses TzKT Pro software (self-deployed version) you should mention that fact on your website or application by placing the label **\"Powered by TzKT\"** with a direct link to [pro.tzkt.io](https://pro.tzkt.io).  
 
-If your application or service uses the TzKT Pro in any forms: directly on frontend or indirectly on backend, you should mention that fact on your website or application
-by placing the label **\"Powered by TzKT Pro\"** with a direct link to [pro.tzkt.io](https://pro.tzkt.io).
+API endpoint provided at `pro.tzkt.io` is currently working in demo mode:
+* Authorization token is `baking_bad`;
+* There are no rate limits, however abusers will be selectively restricted.
+
+Paid subscription options (with SLA) will be available in the nearest future.
 
 ### Client libraries
 
-* Javascript
-* Python
-* Rust
-* Dart
+PostgREST ecosystem includes a set of [client libraries](http://postgrest.org/en/v7.0.0/ecosystem.html#client-side-libraries) developed by the community, and they all are compatible with TzKT Pro.  
+We recommend using those built by the [Supabase](https://github.com/supabase) team as they are most maintained, documented, and share a common super-convenient chaining syntax:
+* [Javascript](https://github.com/supabase/postgrest-js)
+* [Python](https://github.com/supabase/postgrest-py)
+* [Rust](https://github.com/supabase/postgrest-rs)
+* [Dart](https://github.com/supabase/postgrest-dart)
 
 ### Contacts Us
 

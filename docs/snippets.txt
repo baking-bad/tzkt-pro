@@ -7,6 +7,7 @@ let { body: contracts } = await client
   .eq("is_staked", true)
   .select("address, creator")
   .order("last_level", sortAscending=false)
+  .limit(5)
 
 
 from postgrest_py import PostgrestClient
@@ -16,6 +17,7 @@ async with PostgrestClient("https://pro.tzkt.io/v1") as client:
     .auth("baking_bad") \
     .from_("transactions") \
     .select("*") \
+    .limit(5)
     .execute() \
     .json()
 
@@ -27,6 +29,7 @@ let resp = client
   .auth("baking_bad")
   .from("blocks")
   .select("level")
+  .limit(5)
   .execute()
   .await?;
 
@@ -39,4 +42,9 @@ var response = await client
     .from('rewards')
     .select('baker, total_rewards')
     .eq('cycle', 200)
+    .limit(5)
     .end();
+
+
+width = 700px
+size = 2x

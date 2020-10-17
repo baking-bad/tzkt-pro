@@ -7,6 +7,7 @@ async def main():
       .auth("{{auth}}") \
       .from_("{{table_name}}") \
       .select("*") \
+      .limit(5) \
       .execute()
     {{table_name}} = r.json()
 

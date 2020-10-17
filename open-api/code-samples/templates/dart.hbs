@@ -5,4 +5,5 @@ var response = await client
     .auth('{{auth}}')
     .from('{{table_name}}')
     .select('*')
+    .limit(5)
     .end();

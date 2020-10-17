@@ -5,5 +5,6 @@ let resp = client
     .auth("{{auth}}")
     .from("{{table_name}}")
     .select("*")
+    .limit(5)
     .execute()
     .await?;
