@@ -78,7 +78,7 @@ SELECT
     "accounts"."PublicKey" AS "public_key"
 FROM "public"."Accounts" AS "accounts"
          LEFT JOIN "public"."Accounts" AS "delegate" ON "delegate"."Id" = "accounts"."DelegateId"
-WHERE "accounts"."Type" = 1;
+WHERE "accounts"."Type" = 0;
 
 -- add view comments
 
@@ -145,7 +145,7 @@ SELECT
     "accounts"."NonceRevelationsCount" AS "num_nonce_revelations",
     "accounts"."RevelationPenaltiesCount" AS "num_revelation_penalties"
 FROM "public"."Accounts" AS "accounts"
-WHERE "accounts"."Type" = 2;
+WHERE "accounts"."Type" = 1;
 
 -- add view comments
 
@@ -212,8 +212,8 @@ SELECT
     "accounts"."DelegationLevel" AS "delegation_level",
     "accounts"."Staked" AS "is_staked",
     CASE
-        WHEN "accounts"."Kind" = 1 THEN 'delegator_contract'
-        WHEN "accounts"."Kind" = 2 THEN 'smart_contract'
+        WHEN "accounts"."Kind" = 0 THEN 'delegator_contract'
+        WHEN "accounts"."Kind" = 1 THEN 'smart_contract'
         ELSE NULL
         END AS "kind",
     "accounts"."CreatorId" AS "creator_id",
@@ -222,7 +222,7 @@ SELECT
     FROM "public"."Accounts" AS "accounts"
         LEFT JOIN "public"."Accounts" AS "delegate" ON "delegate"."Id" = "accounts"."DelegateId"
         LEFT JOIN "public"."Accounts" AS "creator" ON "delegate"."Id" = "accounts"."CreatorId"
-    WHERE "accounts"."Type" = 3;
+    WHERE "accounts"."Type" = 2;
 
 -- add view comments
 
@@ -518,15 +518,15 @@ SELECT
     "rights"."BakerId" AS "baker_id",
     "baker"."Address" AS "baker",
     CASE
-        WHEN "rights"."Type" = 1 THEN 'baking'
-        WHEN "rights"."Type" = 2 THEN 'endorsing'
+        WHEN "rights"."Type" = 0 THEN 'baking'
+        WHEN "rights"."Type" = 1 THEN 'endorsing'
         ELSE NULL
     END AS "type",
     CASE
-        WHEN "rights"."Status" = 1 THEN 'future'
-        WHEN "rights"."Status" = 2 THEN 'realized'
-        WHEN "rights"."Status" = 3 THEN 'uncovered'
-        WHEN "rights"."Status" = 4 THEN 'missed'
+        WHEN "rights"."Status" = 0 THEN 'future'
+        WHEN "rights"."Status" = 1 THEN 'realized'
+        WHEN "rights"."Status" = 2 THEN 'uncovered'
+        WHEN "rights"."Status" = 3 THEN 'missed'
         ELSE NULL
     END AS "status",
     "rights"."Priority" AS "priority",
@@ -564,17 +564,22 @@ ALTER VIEW "api"."rights" OWNER TO "api_views_owner";
 
 CREATE OR REPLACE VIEW "api"."ballots" AS
 SELECT
-   "ballots"."Level" AS "level",
-   "ballots"."Timestamp" AS "timestamp",
-   "ballots"."OpHash" AS "hash",
-   "ballots"."PeriodId" AS "period_id",
-   "voting_period"."Code" AS "voting_period",
-   "ballots"."ProposalId" AS "proposal_id",
-   "proposal"."Hash" AS "proposal",
-   "ballots"."SenderId" AS "baker_id",
-   "baker"."Address" AS "baker",
-   "ballots"."Rolls" AS "num_rolls",
-   "ballots"."Vote" AS "vote"
+    "ballots"."Level" AS "level",
+    "ballots"."Timestamp" AS "timestamp",
+    "ballots"."OpHash" AS "hash",
+    "ballots"."PeriodId" AS "period_id",
+    "voting_period"."Code" AS "voting_period",
+    "ballots"."ProposalId" AS "proposal_id",
+    "proposal"."Hash" AS "proposal",
+    "ballots"."SenderId" AS "baker_id",
+    "baker"."Address" AS "baker",
+    "ballots"."Rolls" AS "num_rolls",
+    CASE
+        WHEN "ballots"."Vote" = 0 THEN 'yay'
+        WHEN "ballots"."Vote" = 1 THEN 'nay'
+        WHEN "ballots"."Vote" = 2 THEN 'pass'
+        ELSE NULL
+    END AS "vote"
 FROM
     "public"."BallotOps" AS "ballots"
     LEFT JOIN "public"."VotingPeriods" AS "voting_period" ON "voting_period"."Id" = "ballots"."PeriodId"
@@ -984,10 +989,10 @@ SELECT
     "migrations"."AccountId" AS "account_id",
     "account"."Address" AS "account",
     CASE
-        WHEN "migrations"."Kind" = 1 THEN 'bootstrap'
-        WHEN "migrations"."Kind" = 2 THEN 'activate_delegate'
-        WHEN "migrations"."Kind" = 3 THEN 'airdrop'
-        WHEN "migrations"."Kind" = 4 THEN 'proposal_invoice'
+        WHEN "migrations"."Kind" = 0 THEN 'bootstrap'
+        WHEN "migrations"."Kind" = 1 THEN 'activate_delegate'
+        WHEN "migrations"."Kind" = 2 THEN 'airdrop'
+        WHEN "migrations"."Kind" = 3 THEN 'proposal_invoice'
         ELSE NULL
     END AS "kind",
     "migrations"."BalanceChange" AS "balance_change"
@@ -1190,10 +1195,9 @@ SELECT
     "proposals"."Id" AS "id",
     "proposals"."Hash" AS "hash",
     CASE
-        WHEN "proposals"."Status" = 1 THEN 'active'
-        WHEN "proposals"."Status" = 2 THEN 'accepted'
-        WHEN "proposals"."Status" = 3 THEN 'skipped'
-        WHEN "proposals"."Status" = 4 THEN 'rejected'
+        WHEN "proposals"."Status" = 0 THEN 'active'
+        WHEN "proposals"."Status" = 1 THEN 'applied'
+        WHEN "proposals"."Status" = 2 THEN 'declined'
         ELSE NULL
     END AS "status",
     "proposals"."InitiatorId" AS "baker_id",
@@ -1458,7 +1462,13 @@ ALTER VIEW "api"."transactions" OWNER TO "api_views_owner";
 CREATE OR REPLACE VIEW "api"."voting_periods" AS
 SELECT
     "voting_periods"."Code" AS "code",
-    "voting_periods"."Kind" AS "kind",
+    CASE
+        WHEN "voting_periods"."Kind" = 0 THEN 'proposal'
+        WHEN "voting_periods"."Kind" = 1 THEN 'exploration'
+        WHEN "voting_periods"."Kind" = 2 THEN 'testing'
+        WHEN "voting_periods"."Kind" = 3 THEN 'promotion'
+        ELSE NULL
+    END AS "kind",
     "voting_periods"."StartLevel" AS "start_level",
     "voting_periods"."EndLevel" AS "end_level",
     "voting_periods"."ProposalId" AS "proposal_id",
