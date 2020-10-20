@@ -1,7 +1,7 @@
 import { PostgrestClient } from '@supabase/postgrest-js'
 
 let client = new PostgrestClient('{{client_url}}')
-let { body: {{table_name}} } = await client
+let { data: {{table_name}}, error } = await client
   .auth('{{auth}}')
   .from('{{table_name}}')
   .select("*")

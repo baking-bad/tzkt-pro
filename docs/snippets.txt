@@ -1,7 +1,7 @@
 import { PostgrestClient } from '@supabase/postgrest-js'
 
 let client = new PostgrestClient('https://pro.tzkt.io/v1')
-let { body: contracts } = await client
+let { data: contracts, error } = await client
   .auth('baking_bad')
   .from('contracts')
   .eq("is_staked", true)
@@ -48,3 +48,4 @@ var response = await client
 
 width = 700px
 size = 2x
+https://carbon.now.sh/?bg=rgba(171%2C%20184%2C%20195%2C%201)&t=one-dark&wt=none&l=auto&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=4x&wm=false&code=import%2520%257B%2520PostgrestClient%2520%257D%2520from%2520%27%2520%2540supabase%252Fpostgrest-js%27%250A%250Alet%2520client%2520%253D%2520new%2520PostgrestClient(%27https%253A%252F%252Fpro.tzkt.io%252Fv1%27)%250Alet%2520%257B%2520body%253A%2520users%2520%257D%2520%253D%2520await%2520client%250A%2520%2520.auth(%27baking_bad%27)%250A%2520%2520.from(%27users%27)%250A%2520%2520.select(%2522*%2522)
