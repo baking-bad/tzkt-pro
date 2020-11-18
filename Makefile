@@ -85,3 +85,8 @@ reload:
 	make spec
 	make docs
 	docker restart tzkt-pro-nginx
+
+upgrade:
+	docker-compose pull
+	docker-compose restart
+	make reload
