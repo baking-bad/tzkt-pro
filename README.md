@@ -48,6 +48,13 @@ make spec
 make docs
 ```
 
+## Upgrade
+
+Just hit the `make upgrade` command to pull the latest images from Docker Hub and restart services. Specs and Docs will be also generated.
+```bash
+make upgrade
+```
+
 ## Code Samples
 
 ``make spec`` will generate a ``GET`` code sample for each endpoint using the ``open-api/code-samples/config/gen-code-samples.config.json`` config.  
