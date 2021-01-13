@@ -35,8 +35,12 @@ db-restore:
 	docker-compose exec -T db pg_restore -U tzkt -O -x -v -d tzkt_db -1 < tzkt_db.backup
 
 db-pro:
+	#docker-compose exec -T db psql -U tzkt postgres -c "DROP OWNED BY postgrest;"
 	docker-compose exec -T db psql -U tzkt postgres -c "DROP USER IF EXISTS postgrest;"
 	docker-compose exec -T db psql -U tzkt postgres -c "CREATE USER postgrest WITH PASSWORD '$$POSTGREST_PASSWORD';"
+	docker-compose exec -T db psql -U tzkt postgres -c "DROP OWNED BY hasura;"
+	docker-compose exec -T db psql -U tzkt postgres -c "DROP USER IF EXISTS hasura;"
+	docker-compose exec -T db psql -U tzkt postgres -c "CREATE USER hasura WITH PASSWORD '$$HASURA_PASSWORD';"
 	docker-compose exec -T db psql -U tzkt -d tzkt_db < init.sql
 
 pro-start:

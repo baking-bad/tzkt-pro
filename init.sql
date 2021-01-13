@@ -8,7 +8,7 @@ DROP ROLE IF EXISTS indexer;
 CREATE ROLE indexer NOINHERIT;
 GRANT indexer to tzkt;
 
--- postgrest
+-- postgrest & hasura
 
 DROP ROLE IF EXISTS api_views_owner;
 DROP ROLE IF EXISTS api_anon;
@@ -16,10 +16,29 @@ CREATE ROLE api_views_owner NOINHERIT;
 CREATE ROLE api_anon NOINHERIT;
 GRANT api_views_owner to tzkt;
 GRANT api_anon to postgrest;
+GRANT api_anon to hasura;
+
+DROP SCHEMA IF EXISTS hdb_catalog CASCADE;
+DROP SCHEMA IF EXISTS hdb_views CASCADE;
+CREATE SCHEMA hdb_catalog;
+CREATE SCHEMA hdb_views;
+
+ALTER SCHEMA hdb_catalog OWNER TO hasura;
+ALTER SCHEMA hdb_views OWNER TO hasura;
+
+GRANT SELECT ON ALL TABLES IN SCHEMA information_schema TO hasura;
+GRANT SELECT ON ALL TABLES IN SCHEMA pg_catalog TO hasura;
 
 -- -----------------------------------------------------
 -- schemas
 -- -----------------------------------------------------
+
+-- extensions
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+ALTER EXTENSION pgcrypto SET SCHEMA public;
+
+GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO hasura;
 
 -- public
 
@@ -29,6 +48,9 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO indexer;
 
 GRANT USAGE ON SCHEMA public TO api_views_owner;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO api_views_owner;
+
+GRANT USAGE ON SCHEMA public TO hasura;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO hasura;
 
 -- api (postgrest)
 

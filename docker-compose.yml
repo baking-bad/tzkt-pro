@@ -16,6 +16,19 @@ services:
     ports:
       - "127.0.0.1:${POSTGREST_PORT:-3000}:3000"
 
+  hasura:
+    container_name: hasura
+    restart: always
+    image: hasura/graphql-engine:v1.3.3
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://hasura:${HASURA_PASSWORD}@db:5432/tzkt_db
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+    depends_on:
+      - db
+    ports:
+      - "127.0.0.1:${HASURA_PORT:-5000}:8080"
+
   db:
     container_name: tzkt-pro-db
     restart: always
