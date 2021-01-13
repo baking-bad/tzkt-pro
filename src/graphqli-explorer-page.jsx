@@ -7,7 +7,7 @@ import "graphiql/graphiql.css";
 
 const fetcher = params => {
   return fetch(
-    `${window.location.origin}/v2/graphql`,
+    `https://pro.tzkt.io/v2/graphql`,
     {
       method: 'post',
       headers: {
@@ -29,22 +29,35 @@ const fetcher = params => {
     });
 };
 
+const ZERO_INFO_PATIENCE_MS = 1500;
+
 class App extends Component {
   constructor(props) {
     super(props);
     this._graphiql = GraphiQL;
     this.state = {
       schema: null,
+      loading_schema: false,
       query: '',
       explorerIsOpen: true
     };
   }
 
   componentDidMount() {
+    setTimeout(() => {
+      if (this.state.schema === null) {
+        this.setState({
+          loading_schema: true,
+        });
+      }
+    }, ZERO_INFO_PATIENCE_MS);
     fetcher({
       query: getIntrospectionQuery()
     }).then(result => {
-      this.setState({ schema: buildClientSchema(result.data) });
+      this.setState({
+        schema: buildClientSchema(result.data),
+        loading_schema: false,
+      });
     });
   }
 
@@ -60,6 +73,11 @@ class App extends Component {
     const { query, schema } = this.state;
     return (
       <div className="graphiql-container">
+        { this.state.loading_schema &&
+          <p className="loading-informer">
+            Schema is loading
+          </p>
+        }
         <GraphiQLExplorer
           schema={schema}
           query={query}
