@@ -94,3 +94,6 @@ upgrade:
 	docker-compose pull
 	docker-compose restart
 	make reload
+
+build-front:
+	npm run build
