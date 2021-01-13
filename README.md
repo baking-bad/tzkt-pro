@@ -7,8 +7,7 @@
 #### Install dependencies
 
 ```bash
-sudo apt install jq  # or brew install jq
-npm i
+make install
 ```
 
 #### Download latest TzKT snapshot

@@ -8,7 +8,7 @@ module.exports = {
     'graphqli-explorer-page': './src/graphqli-explorer-page.jsx'
   },
   output: {
-    filename: './build/[name].js',
+    filename: './build/js/[name].js',
     path: path.resolve('docs')
   },
   resolve: {
