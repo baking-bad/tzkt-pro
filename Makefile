@@ -18,6 +18,11 @@ TAG_GROUPS = open-api/data/open-api-tag-groups.json
 ADDITIONAL_DATA = open-api/data/open-api-additional-data.json
 DESCRIPTION = open-api/data/open-api-description.md
 
+install:
+	sudo apt install jq
+	npm i
+	npm ddp
+
 snapshot:
 	docker run --name tzkt-snapshot bakingbad/tzkt-snapshot:latest
 	docker cp tzkt-snapshot:/tzkt_db.backup .
@@ -83,6 +88,7 @@ docs:
 	rm -rf docs/build || true
 	mkdir docs/build
 	./node_modules/.bin/redoc-cli bundle docs/config/openapi.json --output docs/build/docs.html
+	npm run build
 	cp -r docs/static/* docs/build/
 
 reload:
@@ -94,6 +100,3 @@ upgrade:
 	docker-compose pull
 	docker-compose restart
 	make reload
-
-build-front:
-	npm run build
