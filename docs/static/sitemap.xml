@@ -1,9 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://pro.txzkt.io/index.html</loc>
+        <loc>https://pro.tzkt.io/</loc>
     </url>
     <url>
         <loc>https://pro.tzkt.io/docs.html</loc>
+    </url>
+    <url>
+        <loc>https://pro.tzkt.io/graphql.html</loc>
     </url>
 </urlset>
