@@ -8,10 +8,6 @@
     "tags": ["activations", "delegations", "originations", "reveals", "transactions"]}
   ,
   {
-    "name": "voting",
-    "tags": ["ballots", "proposals", "voting_periods", "voting_snapshots", "protocol_proposals", "protocols"]}
-  ,
-  {
     "name": "baking",
     "tags": ["balance_snapshots", "rewards", "rights", "nonce_revelations", "revelation_penalties", "endorsements", "double_bakings", "double_endorsings"]
   },
