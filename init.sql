@@ -584,7 +584,7 @@ ALTER VIEW "api"."rights" OWNER TO "api_views_owner";
 
 -- create view
 
-CREATE OR REPLACE VIEW "api"."ballots" AS
+/* CREATE OR REPLACE VIEW "api"."ballots" AS
 SELECT
     "ballots"."Level" AS "level",
     "ballots"."Timestamp" AS "timestamp",
@@ -624,7 +624,7 @@ COMMENT ON column "api"."ballots"."vote" IS 'Vote, given in the ballot (yay, nay
 
 -- set view owner
 
-ALTER VIEW "api"."ballots" OWNER TO "api_views_owner";
+ALTER VIEW "api"."ballots" OWNER TO "api_views_owner"; */
 
 -- test
 
@@ -1165,7 +1165,7 @@ ALTER VIEW "api"."originations" OWNER TO "api_views_owner";
 
 -- create view
 
-CREATE OR REPLACE VIEW "api"."proposals" AS
+/* CREATE OR REPLACE VIEW "api"."proposals" AS
 SELECT
     "proposals"."Level" AS "level",
     "proposals"."Timestamp" AS "timestamp",
@@ -1200,7 +1200,7 @@ COMMENT ON column "api"."proposals"."is_duplicate" IS 'Indicates whether proposa
 
 -- set view owner
 
-ALTER VIEW "api"."proposals" OWNER TO "api_views_owner";
+ALTER VIEW "api"."proposals" OWNER TO "api_views_owner"; */
 
 -- test
 
