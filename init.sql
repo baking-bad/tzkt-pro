@@ -590,7 +590,7 @@ SELECT
     "ballots"."Timestamp" AS "timestamp",
     "ballots"."OpHash" AS "hash",
     "ballots"."PeriodId" AS "period_id",
-    "voting_period"."Code" AS "voting_period",
+    -- "voting_period"."Index" AS "voting_period",
     "ballots"."ProposalId" AS "proposal_id",
     "proposal"."Hash" AS "proposal",
     "ballots"."SenderId" AS "baker_id",
@@ -604,7 +604,7 @@ SELECT
     END AS "vote"
 FROM
     "public"."BallotOps" AS "ballots"
-    LEFT JOIN "public"."VotingPeriods" AS "voting_period" ON "voting_period"."Id" = "ballots"."PeriodId"
+    -- LEFT JOIN "public"."VotingPeriods" AS "voting_period" ON "voting_period"."Id" = "ballots"."PeriodId"
     LEFT JOIN "public"."Proposals" AS "proposal" ON "proposal"."Id" = "ballots"."ProposalId"
     LEFT JOIN "public"."Accounts" AS "baker" ON "baker"."Id" = "ballots"."SenderId";
 
@@ -616,7 +616,7 @@ Used to vote for a proposal in a given voting cycle';
 COMMENT ON column "api"."ballots"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."ballots"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
 COMMENT ON column "api"."ballots"."hash" IS 'Hash of the operation';
-COMMENT ON column "api"."ballots"."voting_period" IS 'Index of the voting period for which the ballot was submitted';
+-- COMMENT ON column "api"."ballots"."voting_period" IS 'Index of the voting period for which the ballot was submitted';
 COMMENT ON column "api"."ballots"."proposal" IS 'Hash of the proposal for which ballot was submitted';
 COMMENT ON column "api"."ballots"."baker" IS 'Information about the delegate (baker), submitted the ballot';
 COMMENT ON column "api"."ballots"."num_rolls" IS 'Number of baker''s rolls (baker''s voting power)';
@@ -1171,7 +1171,7 @@ SELECT
     "proposals"."Timestamp" AS "timestamp",
     "proposals"."OpHash" AS "hash",
     "proposals"."PeriodId" AS "period_id",
-    "voting_period"."Code" AS "voting_period",
+    -- "voting_period"."Code" AS "voting_period",
     "proposals"."ProposalId" AS "proposal_id",
     "protocol_proposal"."Hash" AS "protocol_proposal",
     "proposals"."SenderId" AS "baker_id",
@@ -1180,7 +1180,7 @@ SELECT
     "proposals"."Duplicated" AS "is_duplicate"
 FROM
     "public"."ProposalOps" AS "proposals"
-    LEFT JOIN "public"."VotingPeriods" AS "voting_period" ON "voting_period"."Id" = "proposals"."PeriodId"
+    -- LEFT JOIN "public"."VotingPeriods" AS "voting_period" ON "voting_period"."Id" = "proposals"."PeriodId"
     LEFT JOIN "public"."Proposals" AS "protocol_proposal" ON "protocol_proposal"."Id" = "proposals"."ProposalId"
     LEFT JOIN "public"."Accounts" AS "baker" ON "baker"."Id" = "proposals"."SenderId";
 
@@ -1192,7 +1192,7 @@ COMMENT ON view "api"."proposals" IS 'Proposal
 COMMENT ON column "api"."proposals"."level" IS 'The height of the block from the genesis block, in which the operation was included';
 COMMENT ON column "api"."proposals"."timestamp" IS 'Datetime of the block, in which the operation was included (ISO 8601, e.g. 2020-02-20T02:40:57Z)';
 COMMENT ON column "api"."proposals"."hash" IS 'Hash of the operation';
-COMMENT ON column "api"."proposals"."voting_period" IS 'Index of the proposal period for which the proposal was submitted (upvoted)';
+-- COMMENT ON column "api"."proposals"."voting_period" IS 'Index of the proposal period for which the proposal was submitted (upvoted)';
 COMMENT ON column "api"."proposals"."protocol_proposal" IS 'Hash of the submitted (upvoted) proposal';
 COMMENT ON column "api"."proposals"."baker" IS 'Address of the baker (delegate), submitted (upvoted) the proposal operation';
 COMMENT ON column "api"."proposals"."num_rolls" IS 'Number of baker''s rolls (baker''s voting power)';
@@ -1481,9 +1481,9 @@ ALTER VIEW "api"."transactions" OWNER TO "api_views_owner";
 
 -- create view
 
-CREATE OR REPLACE VIEW "api"."voting_periods" AS
+/* CREATE OR REPLACE VIEW "api"."voting_periods" AS
 SELECT
-    "voting_periods"."Code" AS "code",
+    "voting_periods"."Index" AS "index",
     CASE
         WHEN "voting_periods"."Kind" = 0 THEN 'proposal'
         WHEN "voting_periods"."Kind" = 1 THEN 'exploration'
@@ -1491,23 +1491,22 @@ SELECT
         WHEN "voting_periods"."Kind" = 3 THEN 'promotion'
         ELSE NULL
     END AS "kind",
-    "voting_periods"."StartLevel" AS "start_level",
-    "voting_periods"."EndLevel" AS "end_level",
-    "voting_periods"."ProposalId" AS "proposal_id",
-    "voting_periods"."TotalStake" AS "total_stake",
-    "voting_periods"."Participation" AS "participation",
+    "voting_periods"."FirstLevel" AS "first_level",
+    "voting_periods"."LastLevel" AS "last_level",
+    "voting_periods"."TotalRolls" AS "total_rolls",
+    "voting_periods"."ParticipationEma" AS "participation_ema",
     "voting_periods"."Quorum" AS "quorum"
 FROM
-    "public"."VotingPeriods" AS "voting_periods";
+    "public"."VotingPeriods" AS "voting_periods"; 
 
 -- add view comments
 
-COMMENT ON view "api"."voting_periods" IS 'Voting Period
-';
+ COMMENT ON view "api"."voting_periods" IS 'Voting Period
+'; 
 
 -- set view owner
 
-ALTER VIEW "api"."voting_periods" OWNER TO "api_views_owner";
+ ALTER VIEW "api"."voting_periods" OWNER TO "api_views_owner"; */
 
 -- test
 
@@ -1519,7 +1518,7 @@ ALTER VIEW "api"."voting_periods" OWNER TO "api_views_owner";
 
 -- create view
 
-CREATE OR REPLACE VIEW "api"."voting_snapshots" AS
+/* CREATE OR REPLACE VIEW "api"."voting_snapshots" AS
 SELECT
     "voting_snapshots"."Level" AS "level",
     "voting_snapshots"."PeriodId" AS "period_id",
@@ -1539,7 +1538,7 @@ COMMENT ON view "api"."voting_snapshots" IS 'Voting Snapshot
 
 -- set view owner
 
-ALTER VIEW "api"."voting_snapshots" OWNER TO "api_views_owner";
+ALTER VIEW "api"."voting_snapshots" OWNER TO "api_views_owner"; */
 
 -- test
 
