@@ -1212,7 +1212,7 @@ ALTER VIEW "api"."proposals" OWNER TO "api_views_owner";
 
 -- create view
 
-CREATE OR REPLACE VIEW "api"."protocol_proposals" AS
+/* CREATE OR REPLACE VIEW "api"."protocol_proposals" AS
 SELECT
     "proposals"."Id" AS "id",
     "proposals"."Hash" AS "hash",
@@ -1244,7 +1244,7 @@ COMMENT ON column "api"."protocol_proposals"."total_rolls" IS 'The total number 
 
 -- set view owner
 
-ALTER VIEW "api"."protocol_proposals" OWNER TO "api_views_owner";
+ALTER VIEW "api"."protocol_proposals" OWNER TO "api_views_owner"; */
 
 -- test
 
