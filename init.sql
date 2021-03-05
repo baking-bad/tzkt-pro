@@ -1429,7 +1429,7 @@ SELECT
     "transactions"."TargetId" AS "destination_id",
     "destination"."Address" AS "destination",
     "transactions"."Amount" AS "amount",
-    "transactions"."Parameters" AS "parameters",
+    "transactions"."RawParameters" AS "parameters",
     ("transactions"."InternalOperations" & 1 > 0) AS "has_internal_delegations",
     ("transactions"."InternalOperations" & 2 > 0) AS "has_internal_originations",
     ("transactions"."InternalOperations" & 4 > 0) AS "has_internal_transactions"
