@@ -32,7 +32,7 @@ services:
   db:
     container_name: tzkt-pro-db
     restart: always
-    image: postgres:12
+    image: postgres:13
     environment:
       POSTGRES_USER: tzkt
       POSTGRES_PASSWORD: ${TZKT_PASSWORD}
